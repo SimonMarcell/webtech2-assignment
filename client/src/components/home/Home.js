@@ -51,7 +51,7 @@ export default function Home() {
             <Grid container direction="column" alignItems="center" justify="center">
                 <Grid item>
                     <Typography gutterBottom variant="h3" className={classes.gridTitle}>
-                        Made by: Bence Simon (GJE8VX)
+                        Made by: Marcell Simon (K9IVJV)
                     </Typography>
                 </Grid>
                 <Grid item>
