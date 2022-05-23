@@ -44,7 +44,7 @@ class Phones extends Component {
     }
 
     loadPhones = () => {
-        axios.get(`/listPhones`).then(res => {
+        axios.get(`http://localhost:8080/listPhones`).then(res => {
                 if (res.status === 200) {
                     this.setState({phones: res.data, responseArrived: true});
                 }
@@ -56,7 +56,7 @@ class Phones extends Component {
     };
 
     loadStores = () => {
-        axios.get(`/listStores`).then(res => {
+        axios.get(`http://localhost:8080/listStores`).then(res => {
                 if (res.status === 200) {
                     this.setState({stores: res.data});
                 }
@@ -76,7 +76,7 @@ class Phones extends Component {
     handleCloseDeletePhoneDialog = (result) => {
         if (result) {
             let phoneToInteractWith = this.state.phones[this.state.phoneIndexToInteractWith];
-            axios.get(`/deletePhone/${phoneToInteractWith._id}`)
+            axios.get(`http://localhost:8080/deletePhone/${phoneToInteractWith._id}`)
                 .then(res => {
                     if (res.status === 200) {
                         this.setState({
@@ -109,7 +109,7 @@ class Phones extends Component {
     };
 
     removePhoneFromStore = (storeId, phoneId) => {
-        axios.get(`/removePhoneFromStore/${storeId}/${phoneId}`)
+        axios.get(`http://localhost:8080/removePhoneFromStore/${storeId}/${phoneId}`)
             .then(res => {
                 if (res.status === 200) {
                     let additionalMessage = ` and from store(${storeId}) `;
@@ -168,7 +168,7 @@ class Phones extends Component {
 
     addPhoneToStore = (storeId, storeName) => {
         let phoneToInteractWith = this.state.phones[this.state.phoneIndexToInteractWith];
-        axios.get(`/addPhoneToStore/${storeId}/${phoneToInteractWith._id}`)
+        axios.get(`http://localhost:8080/addPhoneToStore/${storeId}/${phoneToInteractWith._id}`)
             .then(res => {
                 if (res.status === 200) {
                     this.setState({
@@ -221,7 +221,7 @@ class Phones extends Component {
                 }
             };
 
-            axios.put(`/updatePhone/${phone._id}`, phoneToSend)
+            axios.put(`http://localhost:8080/updatePhone/${phone._id}`, phoneToSend)
                 .then(res => {
                     if (res.status === 200) {
                         //TODO: do not mutate directly, use setState instead
@@ -256,7 +256,7 @@ class Phones extends Component {
         });
 
         if (phone !== undefined) {
-            axios.post(`/addPhone`, phone)
+            axios.post(`http://localhost:8080/addPhone`, phone)
                 .then(res => {
                     if (res.status === 200) {
                         let phones = this.state.phones;

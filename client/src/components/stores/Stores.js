@@ -40,7 +40,7 @@ class Stores extends Component {
     }
 
     loadStores = () => {
-        axios.get(`/listStores`).then(res => {
+        axios.get(`http://localhost:8080/listStores`).then(res => {
                 if (res.status === 200) {
                     this.setState({stores: res.data, responseArrived: true});
                 }
@@ -79,7 +79,7 @@ class Stores extends Component {
     };
 
     handleRemovePhoneButtonClick = (phoneId, index) => {
-        axios.get(`/removePhoneFromStore/` +
+        axios.get(`http://localhost:8080/removePhoneFromStore/` +
             `${this.state.stores[this.state.storeIndexToInteractWith]._id}/${phoneId}`)
             .then(res => {
                 if (res.status === 200) {
@@ -119,7 +119,7 @@ class Stores extends Component {
     handleCloseDeleteStoreDialog = (result) => {
         if (result) {
             let storeToInteractWith = this.state.stores[this.state.storeIndexToInteractWith];
-            axios.get(`/deleteStore/${storeToInteractWith._id}`)
+            axios.get(`http://localhost:8080/deleteStore/${storeToInteractWith._id}`)
                 .then(res => {
                     if (res.status === 200) {
                         this.setState({
@@ -154,7 +154,7 @@ class Stores extends Component {
         });
 
         if (store !== undefined) {
-            axios.post(`/addStore`, store)
+            axios.post(`http://localhost:8080/addStore`, store)
                 .then(res => {
                     if (res.status === 200) {
                         let stores = this.state.stores;

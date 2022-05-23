@@ -46,7 +46,7 @@ export default function PhoneCard(props) {
 
     const fetchPhonesFromStore = async () => {
         const fetchPhonesFromStore = await fetch(
-            `/listPhonesFromStore/${store._id}`
+            `http://localhost:8080/listPhonesFromStore/${store._id}`
         );
         const phonesFromStore = await fetchPhonesFromStore.json();
         const phones = await phonesFromStore;
