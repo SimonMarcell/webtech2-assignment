@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {blue} from '@material-ui/core/colors';
-import SmartphoneIcon from "@material-ui/icons/Smartphone";
+import FastfoodIcon from "@material-ui/icons/Fastfood";
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline'
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
@@ -21,33 +21,33 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ListPhonesFromStoreDialog(props) {
+export default function ListMealsFromRestaurantDialog(props) {
     const classes = useStyles();
-    const {onClose, open, phones, store} = props;
+    const {onClose, open, meals, restaurant} = props;
 
     const handleClose = () => {
         onClose();
     };
 
-    const handleRemovePhoneButtonClick = (phoneId, index) => {
-        props.handleRemovePhoneButtonClick(phoneId, index);
+    const handleRemoveMealButtonClick = (mealId, index) => {
+        props.handleRemoveMealButtonClick(mealId, index);
     };
 
-    return store === undefined ? null : store.availablePhones.length === 0 ? null : (
+    return restaurant === undefined ? null : restaurant.availableMeals.length === 0 ? null : (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title">{store.name}</DialogTitle>
+            <DialogTitle id="simple-dialog-title">{restaurant.name}</DialogTitle>
             <List>
-                {phones.map((phone, index) => (
-                    <ListItem key={phone._id} index={index}>
+                {meals.map((meal, index) => (
+                    <ListItem key={meal._id} index={index}>
                         <ListItemAvatar>
                             <Avatar className={classes.avatar}>
-                                <SmartphoneIcon/>
+                                <FastfoodIcon/>
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={phone.manufacturer} secondary={phone.model}/>
-                        <Tooltip title="Remove Phone from Store">
+                        <ListItemText primary={meal.manufacturer} secondary={meal.model}/>
+                        <Tooltip title="Remove Meal from Restaurant">
                             <IconButton aria-label="edit"
-                                        onClick={() => handleRemovePhoneButtonClick(phone._id, index)}>
+                                        onClick={() => handleRemoveMealButtonClick(meal._id, index)}>
                                 <RemoveCircleOutlineIcon/>
                             </IconButton>
                         </Tooltip>
@@ -58,7 +58,7 @@ export default function ListPhonesFromStoreDialog(props) {
     );
 }
 
-ListPhonesFromStoreDialog.propTypes = {
+ListMealsFromRestaurantDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired
 };

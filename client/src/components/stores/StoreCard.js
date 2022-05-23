@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
-import StoreIcon from "@material-ui/icons/Store";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
 import Card from "@material-ui/core/Card";
 import {makeStyles} from "@material-ui/core/styles";
 import StarIcon from '@material-ui/icons/Star';
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     content: {
         height: 140,
     },
-    storeIcon: {
+    restaurantIcon: {
         marginTop: '40px',
         width: '70px',
         height: '70px'
@@ -34,8 +34,8 @@ const useStyles = makeStyles({
     }
 });
 
-export default function PhoneCard(props) {
-    const {store, index} = props;
+export default function MealCard(props) {
+    const {restaurant, index} = props;
     const classes = useStyles();
 
     const [starsToRender, setStarsToRender] = React.useState([]);
@@ -44,41 +44,41 @@ export default function PhoneCard(props) {
         setStarsToRenderEffect();
     }, []);
 
-    const fetchPhonesFromStore = async () => {
-        const fetchPhonesFromStore = await fetch(
-            `http://localhost:8080/listPhonesFromStore/${store._id}`
+    const fetchMealsFromRestaurant = async () => {
+        const fetchMealsFromRestaurant = await fetch(
+            `http://localhost:8080/listMealsFromRestaurant/${restaurant._id}`
         );
-        const phonesFromStore = await fetchPhonesFromStore.json();
-        const phones = await phonesFromStore;
-        props.fetchPhonesFromStore(phones);
-        return phonesFromStore;
+        const mealsFromRestaurant = await fetchMealsFromRestaurant.json();
+        const meals = await mealsFromRestaurant;
+        props.fetchMealsFromRestaurant(meals);
+        return mealsFromRestaurant;
     };
 
     const setStarsToRenderEffect = () => {
-        if (store !== undefined) {
-            for (let i = 0; i < parseInt(store.rating); i++) {
+        if (restaurant !== undefined) {
+            for (let i = 0; i < parseInt(restaurant.rating); i++) {
                 setStarsToRender(array => [...array, i])
             }
         }
     };
 
-    const handleListPhonesFromStoreButtonClick = async () => {
-        await fetchPhonesFromStore();
-        props.handleListPhonesFromStoreButtonClick(index);
+    const handleListMealsFromRestaurantButtonClick = async () => {
+        await fetchMealsFromRestaurant();
+        props.handleListMealsFromRestaurantButtonClick(index);
     };
 
-    const handleDeleteStoreButtonClick = () => {
-        props.handleDeleteStoreButtonClick(index);
+    const handleDeleteRestaurantButtonClick = () => {
+        props.handleDeleteRestaurantButtonClick(index);
     };
 
-    return store === undefined ? null : (
+    return restaurant === undefined ? null : (
         <Card className={classes.root}>
             <CardContent>
                 <div className={classes.content}>
-                    <StoreIcon className={classes.storeIcon}/>
+                    <RestaurantIcon className={classes.restaurantIcon}/>
                 </div>
                 <Typography gutterBottom variant="h5" component="h2">
-                    {store.name}
+                    {restaurant.name}
                 </Typography>
                 <br/>
                 {
@@ -88,21 +88,21 @@ export default function PhoneCard(props) {
                 }
                 <div>
                     <Typography className={classes.locationTitle}>
-                        {store.location.zipCode} {store.location.country}
+                        {restaurant.location.zipCode} {restaurant.location.country}
                     </Typography>
                     <Typography>
-                        {store.location.town} {store.location.address}
+                        {restaurant.location.town} {restaurant.location.address}
                     </Typography>
                 </div>
             </CardContent>
             <CardActions disableSpacing>
-                <Button size="small" color="secondary" onClick={handleListPhonesFromStoreButtonClick}>
+                <Button size="small" color="secondary" onClick={handleListMealsFromRestaurantButtonClick}>
                     <Typography>
-                        List phones
+                        List meals
                     </Typography>
                 </Button>
-                <Tooltip title="Delete Store">
-                    <IconButton aria-label="delete" style={{marginLeft: "auto"}} onClick={handleDeleteStoreButtonClick}>
+                <Tooltip title="Delete Restaurant">
+                    <IconButton aria-label="delete" style={{marginLeft: "auto"}} onClick={handleDeleteRestaurantButtonClick}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>

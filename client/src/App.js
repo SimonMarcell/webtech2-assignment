@@ -1,8 +1,8 @@
 import React from 'react';
-import Stores from './components/stores/Stores'
+import Restaurants from './components/restaurants/Restaurants'
 import Home from './components/home/Home'
 import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
-import Phones from "./components/phones/Phones";
+import Meals from "./components/meals/Meals";
 import Navigation from "./components/navigation/Navigation";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
@@ -56,8 +56,8 @@ function App() {
                     <Navigation tab/>
                     <Switch>
                         <Route exact path="/" component={Home}/>
-                        <Route exact path="/phones" component={Phones}/>
-                        <Route exact path="/stores" component={Stores}/>
+                        <Route exact path="/meals" component={Meals}/>
+                        <Route exact path="/restaurants" component={Restaurants}/>
                         <Route exact path="*" render={() => (<Redirect to="/"/>)}/>
                     </Switch>
                 </div>

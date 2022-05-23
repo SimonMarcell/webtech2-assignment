@@ -11,6 +11,7 @@ import ListItem from "@material-ui/core/ListItem";
 import EuroIcon from "@material-ui/icons/Euro";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
 const displayTypes = [
     {
@@ -23,7 +24,7 @@ const displayTypes = [
     }
 ];
 
-export default function AddNewPhoneDialog(props) {
+export default function AddNewMealDialog(props) {
     const {onClose, open} = props;
 
     const [manufacturer, setManufacturer] = React.useState();
@@ -33,13 +34,13 @@ export default function AddNewPhoneDialog(props) {
     const [displaySize, setDisplaySize] = React.useState(5.8);
 
     const handleClose = () => {
-        resetPhoneValues();
+        resetMealValues();
         onClose();
     };
 
     const handleSubmit = () => {
-        const phone = {
-            phone: {
+        const meal = {
+            meal: {
                 manufacturer: manufacturer,
                 model: model,
                 price: Number(price),
@@ -47,11 +48,11 @@ export default function AddNewPhoneDialog(props) {
                 displaySize: Number(displaySize)
             }
         };
-        resetPhoneValues();
-        onClose(phone);
+        resetMealValues();
+        onClose(meal);
     };
 
-    function resetPhoneValues() {
+    function resetMealValues() {
         setManufacturer(undefined);
         setModel(undefined);
         setPrice(0);
@@ -104,10 +105,10 @@ export default function AddNewPhoneDialog(props) {
     return (
         <div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle>Add New Phone</DialogTitle>
+                <DialogTitle>Add New Meal</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can detail the new phone's attributes.
+                        Here you can detail the new meal's attributes.
                     </DialogContentText>
                     <List>
                         <ListItem>

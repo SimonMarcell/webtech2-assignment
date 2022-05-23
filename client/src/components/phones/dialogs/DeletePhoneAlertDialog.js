@@ -13,18 +13,18 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
 import {blue} from "@material-ui/core/colors";
 import PropTypes from "prop-types";
-import StoreIcon from '@material-ui/icons/Store';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
 
 const useStyles = makeStyles({
-    store: {
+    restaurant: {
         backgroundColor: blue[100],
         color: blue[600],
     },
 });
 
-export default function DeletePhoneAlertDialog(props) {
+export default function DeleteMealAlertDialog(props) {
     const classes = useStyles();
-    const {onClose, phone, open} = props;
+    const {onClose, meal, open} = props;
 
     const handleClose = (result) => {
         if (result === true) {
@@ -34,7 +34,7 @@ export default function DeletePhoneAlertDialog(props) {
         }
     };
 
-    return phone === undefined ? null : (
+    return meal === undefined ? null : (
         <div>
             <Dialog
                 open={open}
@@ -42,28 +42,28 @@ export default function DeletePhoneAlertDialog(props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle>{"Are you sure you want to delete this phone?"}</DialogTitle>
+                <DialogTitle>{"Are you sure you want to delete this meal?"}</DialogTitle>
                 <DialogContent>
                     <div>
-                        {phone.storesPhoneAvailableIn !== undefined && phone.storesPhoneAvailableIn.length === 0 &&
+                        {meal.restaurantsMealAvailableIn !== undefined && meal.restaurantsMealAvailableIn.length === 0 &&
                         <DialogContentText>
                             It will be deleted from the database and will not be recoverable.
                         </DialogContentText>
                         }
-                        {phone.storesPhoneAvailableIn !== undefined && phone.storesPhoneAvailableIn.length > 0 &&
+                        {meal.restaurantsMealAvailableIn !== undefined && meal.restaurantsMealAvailableIn.length > 0 &&
                         <div>
                             <DialogContentText>
-                                It will be deleted from the database and from the following stores as well:
+                                It will be deleted from the database and from the following restaurants as well:
                             </DialogContentText>
                             <List>
-                                {phone.storesPhoneAvailableIn.map((store) => (
-                                    <ListItem key={store._id}>
+                                {meal.restaurantsMealAvailableIn.map((restaurant) => (
+                                    <ListItem key={restaurant._id}>
                                         <ListItemAvatar>
-                                            <Avatar className={classes.store}>
-                                                <StoreIcon/>
+                                            <Avatar className={classes.restaurant}>
+                                                <RestaurantIcon/>
                                             </Avatar>
                                         </ListItemAvatar>
-                                        <ListItemText primary={store.name}/>
+                                        <ListItemText primary={restaurant.name}/>
                                     </ListItem>
                                 ))}
                             </List>
@@ -84,7 +84,7 @@ export default function DeletePhoneAlertDialog(props) {
     );
 }
 
-DeletePhoneAlertDialog.propTypes = {
+DeleteMealAlertDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired
 };

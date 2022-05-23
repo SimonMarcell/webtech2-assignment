@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Grid from "@material-ui/core/Grid";
-import StoreCard from "./StoreCard";
-import ListPhonesFromStoreDialog from "./dialogs/ListPhonesFromStoreDialog";
+import RestaurantCard from "./RestaurantCard";
+import ListMealsFromRestaurantDialog from "./dialogs/ListMealsFromRestaurantDialog";
 import axios from "axios";
 import ResultSnackBar from "../shared/ResultSnackBar";
-import DeleteStoreAlertDialog from "./dialogs/DeleteStoreAlertDialog";
-import AddNewStoreDialog from "./dialogs/AddNewStoreDialog";
+import DeleteRestaurantAlertDialog from "./dialogs/DeleteRestaurantAlertDialog";
+import AddNewRestaurantDialog from "./dialogs/AddNewRestaurantDialog";
 import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
@@ -20,29 +20,29 @@ const fabStyle = {
     position: 'fixed',
 };
 
-class Stores extends Component {
+class Restaurants extends Component {
 
     state = {
-        stores: [],
+        restaurants: [],
         snackBarOpen: false,
         snackBarMessage: '',
         snackBarMessageSeverity: 'success',
-        storeIndexToInteractWith: 0,
-        phonesFromStore: [],
-        listPhonesFromStoreDialogOpen: false,
-        deleteStoreDialogOpen: false,
-        addNewStoreDialogOpen: false,
+        restaurantIndexToInteractWith: 0,
+        mealsFromRestaurant: [],
+        listMealsFromRestaurantDialogOpen: false,
+        deleteRestaurantDialogOpen: false,
+        addNewRestaurantDialogOpen: false,
         responseArrived: false
     };
 
     componentDidMount() {
-        this.loadStores();
+        this.loadRestaurants();
     }
 
-    loadStores = () => {
-        axios.get(`http://localhost:8080/listStores`).then(res => {
+    loadRestaurants = () => {
+        axios.get(`http://localhost:8080/listRestaurants`).then(res => {
                 if (res.status === 200) {
-                    this.setState({stores: res.data, responseArrived: true});
+                    this.setState({restaurants: res.data, responseArrived: true});
                 }
             },
             error => {
@@ -51,40 +51,40 @@ class Stores extends Component {
             });
     };
 
-    handleListPhonesFromStoreButtonClick = (index) => {
-        if (this.state.stores[index].availablePhones.length === 0) {
+    handleListMealsFromRestaurantButtonClick = (index) => {
+        if (this.state.restaurants[index].availableMeals.length === 0) {
             this.setState({
-                snackBarMessage: 'There are no phones available in this store at the moment',
+                snackBarMessage: 'There are no meals available in this restaurant at the moment',
                 snackBarOpen: true,
                 snackBarMessageSeverity: 'info'
             });
         } else {
             this.setState({
-                storeIndexToInteractWith: index,
-                listPhonesFromStoreDialogOpen: true
+                restaurantIndexToInteractWith: index,
+                listMealsFromRestaurantDialogOpen: true
             });
         }
     };
 
-    handleCloseListPhonesFromStoreDialog = () => {
+    handleCloseListMealsFromRestaurantDialog = () => {
         this.setState({
-            listPhonesFromStoreDialogOpen: false
+            listMealsFromRestaurantDialogOpen: false
         })
     };
 
-    fetchPhonesFromStore = (phones) => {
+    fetchMealsFromRestaurant = (meals) => {
         this.setState({
-            phonesFromStore: phones
+            mealsFromRestaurant: meals
         });
     };
 
-    handleRemovePhoneButtonClick = (phoneId, index) => {
-        axios.get(`http://localhost:8080/removePhoneFromStore/` +
-            `${this.state.stores[this.state.storeIndexToInteractWith]._id}/${phoneId}`)
+    handleRemoveMealButtonClick = (mealId, index) => {
+        axios.get(`http://localhost:8080/removeMealFromRestaurant/` +
+            `${this.state.restaurants[this.state.restaurantIndexToInteractWith]._id}/${mealId}`)
             .then(res => {
                 if (res.status === 200) {
-                    this.state.stores[this.state.storeIndexToInteractWith].availablePhones.splice(index, 1);
-                    this.state.phonesFromStore.splice(index, 1);
+                    this.state.restaurants[this.state.restaurantIndexToInteractWith].availableMeals.splice(index, 1);
+                    this.state.mealsFromRestaurant.splice(index, 1);
 
                     this.setState({
                         snackBarMessage: res.data.msg,
@@ -109,22 +109,22 @@ class Stores extends Component {
 
     // BEGIN: DELETE STORE
 
-    handleDeleteStoreButtonClick = (index) => {
+    handleDeleteRestaurantButtonClick = (index) => {
         this.setState({
-            deleteStoreDialogOpen: true,
-            storeIndexToInteractWith: index
+            deleteRestaurantDialogOpen: true,
+            restaurantIndexToInteractWith: index
         });
     };
 
-    handleCloseDeleteStoreDialog = (result) => {
+    handleCloseDeleteRestaurantDialog = (result) => {
         if (result) {
-            let storeToInteractWith = this.state.stores[this.state.storeIndexToInteractWith];
-            axios.get(`http://localhost:8080/deleteStore/${storeToInteractWith._id}`)
+            let restaurantToInteractWith = this.state.restaurants[this.state.restaurantIndexToInteractWith];
+            axios.get(`http://localhost:8080/deleteRestaurant/${restaurantToInteractWith._id}`)
                 .then(res => {
                     if (res.status === 200) {
                         this.setState({
-                            stores: [...this.state.stores.filter(
-                                store => store._id !== storeToInteractWith._id
+                            restaurants: [...this.state.restaurants.filter(
+                                restaurant => restaurant._id !== restaurantToInteractWith._id
                             )],
                             snackBarMessage: res.data.msg,
                             snackBarOpen: true,
@@ -134,7 +134,7 @@ class Stores extends Component {
                 });
         }
         this.setState({
-            deleteStoreDialogOpen: false
+            deleteRestaurantDialogOpen: false
         });
     }
 
@@ -142,23 +142,23 @@ class Stores extends Component {
 
     // BEGIN: ADD NEW STORE
 
-    handleOnAddNewStoreFabClick = () => {
+    handleOnAddNewRestaurantFabClick = () => {
         this.setState({
-            addNewStoreDialogOpen: true
+            addNewRestaurantDialogOpen: true
         });
     };
 
-    handleCloseAddNewStoreDialog = (store) => {
+    handleCloseAddNewRestaurantDialog = (restaurant) => {
         this.setState({
-            addNewStoreDialogOpen: false
+            addNewRestaurantDialogOpen: false
         });
 
-        if (store !== undefined) {
-            axios.post(`http://localhost:8080/addStore`, store)
+        if (restaurant !== undefined) {
+            axios.post(`http://localhost:8080/addRestaurant`, restaurant)
                 .then(res => {
                     if (res.status === 200) {
-                        let stores = this.state.stores;
-                        stores.push(res.data.store);
+                        let restaurants = this.state.restaurants;
+                        restaurants.push(res.data.restaurant);
 
                         this.setState({
                             snackBarOpen: true,
@@ -180,15 +180,15 @@ class Stores extends Component {
 
     render() {
         return (
-            <div id="stores-root">
+            <div id="restaurants-root">
                 <Grid container justify="space-evenly" alignItems="center">
-                    {this.state.stores.map((store, key) => (
-                            <Grid item key={store._id} style={{margin: 10}}>
+                    {this.state.restaurants.map((restaurant, key) => (
+                            <Grid item key={restaurant._id} style={{margin: 10}}>
                                 <br/>
-                                <StoreCard store={store} index={key}
-                                           handleListPhonesFromStoreButtonClick={this.handleListPhonesFromStoreButtonClick}
-                                           fetchPhonesFromStore={this.fetchPhonesFromStore}
-                                           handleDeleteStoreButtonClick={this.handleDeleteStoreButtonClick}
+                                <RestaurantCard restaurant={restaurant} index={key}
+                                           handleListMealsFromRestaurantButtonClick={this.handleListMealsFromRestaurantButtonClick}
+                                           fetchMealsFromRestaurant={this.fetchMealsFromRestaurant}
+                                           handleDeleteRestaurantButtonClick={this.handleDeleteRestaurantButtonClick}
                                 />
                             </Grid>
                         )
@@ -198,33 +198,33 @@ class Stores extends Component {
                     <ResultSnackBar message={this.state.snackBarMessage} open={this.state.snackBarOpen}
                                     onClose={this.handleCloseSnackBar} severity={this.state.snackBarMessageSeverity}/>
                 </div>
-                <div id="listPhonesFromStoreDialogDiv">
-                    <ListPhonesFromStoreDialog onClose={this.handleCloseListPhonesFromStoreDialog}
-                                               open={this.state.listPhonesFromStoreDialogOpen}
-                                               phones={this.state.phonesFromStore}
-                                               store={this.state.stores[this.state.storeIndexToInteractWith]}
-                                               handleRemovePhoneButtonClick={this.handleRemovePhoneButtonClick}
+                <div id="listMealsFromRestaurantDialogDiv">
+                    <ListMealsFromRestaurantDialog onClose={this.handleCloseListMealsFromRestaurantDialog}
+                                               open={this.state.listMealsFromRestaurantDialogOpen}
+                                               meals={this.state.mealsFromRestaurant}
+                                               restaurant={this.state.restaurants[this.state.restaurantIndexToInteractWith]}
+                                               handleRemoveMealButtonClick={this.handleRemoveMealButtonClick}
                     />
                 </div>
-                <div id="deleteStoreAlertDialogDiv">
-                    <DeleteStoreAlertDialog onClose={this.handleCloseDeleteStoreDialog}
-                                            open={this.state.deleteStoreDialogOpen}/>
+                <div id="deleteRestaurantAlertDialogDiv">
+                    <DeleteRestaurantAlertDialog onClose={this.handleCloseDeleteRestaurantDialog}
+                                            open={this.state.deleteRestaurantDialogOpen}/>
                 </div>
-                <div id="addNewStoreDialogDiv">
-                    <AddNewStoreDialog onClose={this.handleCloseAddNewStoreDialog}
-                                       open={this.state.addNewStoreDialogOpen}/>
+                <div id="addNewRestaurantDialogDiv">
+                    <AddNewRestaurantDialog onClose={this.handleCloseAddNewRestaurantDialog}
+                                       open={this.state.addNewRestaurantDialogOpen}/>
                 </div>
-                <div id="addNewStoreFabDiv">
-                    <Tooltip title="Add New Store">
+                <div id="addNewRestaurantFabDiv">
+                    <Tooltip title="Add New Restaurant">
                         <Fab color="secondary" aria-label="add" style={fabStyle}
-                             onClick={this.handleOnAddNewStoreFabClick}>
+                             onClick={this.handleOnAddNewRestaurantFabClick}>
                             <AddIcon/>
                         </Fab>
                     </Tooltip>
                 </div>
                 <div id="emptyCollection">
-                    {this.state.stores.length === 0 ?
-                        <EmptyCollection collectionName={"Stores"}
+                    {this.state.restaurants.length === 0 ?
+                        <EmptyCollection collectionName={"Restaurants"}
                                          responseArrived={this.state.responseArrived}/> : undefined}
                 </div>
             </div>
@@ -232,4 +232,4 @@ class Stores extends Component {
     }
 }
 
-export default Stores;
+export default Restaurants;

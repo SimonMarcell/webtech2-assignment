@@ -7,7 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from "prop-types";
 
-export default function DeleteStoreAlertDialog(props) {
+export default function DeleteRestaurantAlertDialog(props) {
     const {onClose, open} = props;
 
     const handleClose = (result) => {
@@ -26,7 +26,7 @@ export default function DeleteStoreAlertDialog(props) {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle>{"Are you sure you want to delete this store?"}</DialogTitle>
+                <DialogTitle>{"Are you sure you want to delete this restaurant?"}</DialogTitle>
                 <DialogContent>
                     <div>
                         <DialogContentText>
@@ -47,7 +47,7 @@ export default function DeleteStoreAlertDialog(props) {
     );
 }
 
-DeleteStoreAlertDialog.propTypes = {
+DeleteRestaurantAlertDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired
 };

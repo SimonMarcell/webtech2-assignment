@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import axios from "axios";
-import PhoneCard from "./PhoneCard";
+import MealCard from "./MealCard";
 import Grid from "@material-ui/core/Grid";
 import ResultSnackBar from "../shared/ResultSnackBar";
-import AddPhoneToStoreDialog from "./dialogs/AddPhoneToStoreDialog";
-import DeletePhoneAlertDialog from "./dialogs/DeletePhoneAlertDialog";
-import UpdatePhoneDialog from "./dialogs/UpdatePhoneDialog";
+import AddMealToRestaurantDialog from "./dialogs/AddMealToRestaurantDialog";
+import DeleteMealAlertDialog from "./dialogs/DeleteMealAlertDialog";
+import UpdateMealDialog from "./dialogs/UpdateMealDialog";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
-import AddNewPhoneDialog from "./dialogs/AddNewPhoneDialog";
+import AddNewMealDialog from "./dialogs/AddNewMealDialog";
 import Tooltip from "@material-ui/core/Tooltip";
 import EmptyCollection from "../shared/EmptyCollection";
 
@@ -21,32 +21,32 @@ const fabStyle = {
     position: 'fixed',
 };
 
-class Phones extends Component {
+class Meals extends Component {
 
     state = {
-        phones: [],
+        meals: [],
         snackBarOpen: false,
         snackBarMessage: '',
         snackBarMessageSeverity: 'success',
-        stores: [],
-        addPhoneDialogOpen: false,
-        phoneIndexToInteractWith: 0,
-        storesToChooseFromToAddPhone: [],
-        deletePhoneDialogOpen: false,
-        updatePhoneDialogOpen: false,
-        addNewPhoneDialogOpen: false,
+        restaurants: [],
+        addMealDialogOpen: false,
+        mealIndexToInteractWith: 0,
+        restaurantsToChooseFromToAddMeal: [],
+        deleteMealDialogOpen: false,
+        updateMealDialogOpen: false,
+        addNewMealDialogOpen: false,
         responseArrived: false
     };
 
     componentDidMount() {
-        this.loadPhones();
-        this.loadStores();
+        this.loadMeals();
+        this.loadRestaurants();
     }
 
-    loadPhones = () => {
-        axios.get(`http://localhost:8080/listPhones`).then(res => {
+    loadMeals = () => {
+        axios.get(`http://localhost:8080/listMeals`).then(res => {
                 if (res.status === 200) {
-                    this.setState({phones: res.data, responseArrived: true});
+                    this.setState({meals: res.data, responseArrived: true});
                 }
             },
             error => {
@@ -55,10 +55,10 @@ class Phones extends Component {
             });
     };
 
-    loadStores = () => {
-        axios.get(`http://localhost:8080/listStores`).then(res => {
+    loadRestaurants = () => {
+        axios.get(`http://localhost:8080/listRestaurants`).then(res => {
                 if (res.status === 200) {
-                    this.setState({stores: res.data});
+                    this.setState({restaurants: res.data});
                 }
             },
             error => {
@@ -66,28 +66,28 @@ class Phones extends Component {
             });
     };
 
-    handleDeletePhoneButtonClick = (index) => {
+    handleDeleteMealButtonClick = (index) => {
         this.setState({
-            deletePhoneDialogOpen: true,
-            phoneIndexToInteractWith: index
+            deleteMealDialogOpen: true,
+            mealIndexToInteractWith: index
         });
     };
 
-    handleCloseDeletePhoneDialog = (result) => {
+    handleCloseDeleteMealDialog = (result) => {
         if (result) {
-            let phoneToInteractWith = this.state.phones[this.state.phoneIndexToInteractWith];
-            axios.get(`http://localhost:8080/deletePhone/${phoneToInteractWith._id}`)
+            let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
+            axios.get(`http://localhost:8080/deleteMeal/${mealToInteractWith._id}`)
                 .then(res => {
                     if (res.status === 200) {
                         this.setState({
-                            phones: [...this.state.phones.filter(
-                                phone => phone._id !== phoneToInteractWith._id
+                            meals: [...this.state.meals.filter(
+                                meal => meal._id !== mealToInteractWith._id
                             )],
                             snackBarMessage: res.data.msg
                         });
-                        if (phoneToInteractWith.storesPhoneAvailableIn.length > 0) {
-                            this.deletePhoneFromStores(phoneToInteractWith._id,
-                                phoneToInteractWith.storesPhoneAvailableIn);
+                        if (mealToInteractWith.restaurantsMealAvailableIn.length > 0) {
+                            this.deleteMealFromRestaurants(mealToInteractWith._id,
+                                mealToInteractWith.restaurantsMealAvailableIn);
                         } else {
                             this.setState({
                                 snackBarOpen: true,
@@ -98,21 +98,21 @@ class Phones extends Component {
                 });
         }
         this.setState({
-            deletePhoneDialogOpen: false
+            deleteMealDialogOpen: false
         });
     };
 
-    deletePhoneFromStores = (phoneId, stores) => {
-        stores.map((store) => (
-            this.removePhoneFromStore(store._id, phoneId)
+    deleteMealFromRestaurants = (mealId, restaurants) => {
+        restaurants.map((restaurant) => (
+            this.removeMealFromRestaurant(restaurant._id, mealId)
         ));
     };
 
-    removePhoneFromStore = (storeId, phoneId) => {
-        axios.get(`http://localhost:8080/removePhoneFromStore/${storeId}/${phoneId}`)
+    removeMealFromRestaurant = (restaurantId, mealId) => {
+        axios.get(`http://localhost:8080/removeMealFromRestaurant/${restaurantId}/${mealId}`)
             .then(res => {
                 if (res.status === 200) {
-                    let additionalMessage = ` and from store(${storeId}) `;
+                    let additionalMessage = ` and from restaurant(${restaurantId}) `;
                     this.setState(prevState => ({
                         snackBarOpen: true,
                         snackBarMessage: prevState.snackBarMessage.concat(additionalMessage),
@@ -128,14 +128,14 @@ class Phones extends Component {
         });
     };
 
-    handleAddPhoneButtonClick = (index) => {
-        let myArrayFiltered = this.state.stores.slice();
-        const storePhoneAlreadyIn = this.state.phones[index]
-            .storesPhoneAvailableIn.slice();
+    handleAddMealButtonClick = (index) => {
+        let myArrayFiltered = this.state.restaurants.slice();
+        const restaurantMealAlreadyIn = this.state.meals[index]
+            .restaurantsMealAvailableIn.slice();
 
         for (let i = 0; i < myArrayFiltered.length; i++) {
-            for (let j = 0; j < storePhoneAlreadyIn.length; j++) {
-                if (myArrayFiltered[i]._id === storePhoneAlreadyIn[j]._id) {
+            for (let j = 0; j < restaurantMealAlreadyIn.length; j++) {
+                if (myArrayFiltered[i]._id === restaurantMealAlreadyIn[j]._id) {
                     myArrayFiltered.splice(i, 1)
                 }
             }
@@ -144,31 +144,31 @@ class Phones extends Component {
         if (myArrayFiltered.length === 0) {
             this.setState({
                 snackBarOpen: true,
-                snackBarMessage: 'Phone is currently present in all available stores',
+                snackBarMessage: 'Meal is currently present in all available restaurants',
                 snackBarMessageSeverity: 'info'
             })
         } else {
             this.setState({
-                addPhoneDialogOpen: true,
-                phoneIndexToInteractWith: index,
-                storesToChooseFromToAddPhone: myArrayFiltered
+                addMealDialogOpen: true,
+                mealIndexToInteractWith: index,
+                restaurantsToChooseFromToAddMeal: myArrayFiltered
             });
         }
     };
 
-    handleCloseAddPhoneDialog = (storeId, storeName) => {
+    handleCloseAddMealDialog = (restaurantId, restaurantName) => {
         this.setState({
-            addPhoneDialogOpen: false
+            addMealDialogOpen: false
         });
 
-        if (storeId !== undefined && storeId !== '') {
-            this.addPhoneToStore(storeId, storeName);
+        if (restaurantId !== undefined && restaurantId !== '') {
+            this.addMealToRestaurant(restaurantId, restaurantName);
         }
     };
 
-    addPhoneToStore = (storeId, storeName) => {
-        let phoneToInteractWith = this.state.phones[this.state.phoneIndexToInteractWith];
-        axios.get(`http://localhost:8080/addPhoneToStore/${storeId}/${phoneToInteractWith._id}`)
+    addMealToRestaurant = (restaurantId, restaurantName) => {
+        let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
+        axios.get(`http://localhost:8080/addMealToRestaurant/${restaurantId}/${mealToInteractWith._id}`)
             .then(res => {
                 if (res.status === 200) {
                     this.setState({
@@ -176,56 +176,56 @@ class Phones extends Component {
                         snackBarMessage: res.data.msg,
                         snackBarMessageSeverity: 'success'
                     });
-                    let phones = [...this.state.phones];
-                    let phone = {...phones[this.state.phoneIndexToInteractWith]};
+                    let meals = [...this.state.meals];
+                    let meal = {...meals[this.state.mealIndexToInteractWith]};
 
-                    phone.storesPhoneAvailableIn.push({_id: storeId, name: storeName});
+                    meal.restaurantsMealAvailableIn.push({_id: restaurantId, name: restaurantName});
 
-                    this.setState({phones: phones});
+                    this.setState({meals: meals});
                 }
             });
     };
 
-    getStorePhoneAvailableIn = (stores, index) => {
-        let phones = [...this.state.phones];
-        let phone = {...phones[index]};
+    getRestaurantMealAvailableIn = (restaurants, index) => {
+        let meals = [...this.state.meals];
+        let meal = {...meals[index]};
 
-        phone.storesPhoneAvailableIn = stores;
-        phones[index] = phone;
-        this.setState({phones});
+        meal.restaurantsMealAvailableIn = restaurants;
+        meals[index] = meal;
+        this.setState({meals});
     };
 
-    handleUpdatePhoneButtonClick = (index) => {
+    handleUpdateMealButtonClick = (index) => {
         this.setState({
-            phoneIndexToInteractWith: index,
-            updatePhoneDialogOpen: true
+            mealIndexToInteractWith: index,
+            updateMealDialogOpen: true
         });
     };
 
-    handleCloseUpdatePhoneDialog = (price) => {
+    handleCloseUpdateMealDialog = (price) => {
         this.setState({
-            updatePhoneDialogOpen: false
+            updateMealDialogOpen: false
         });
 
         if (price !== undefined) {
-            let phones = [...this.state.phones];
-            let phone = {...phones[this.state.phoneIndexToInteractWith]};
-            phone.price = parseInt(price);
-            let phoneToSend = {
-                phone: {
-                    "manufacturer": phone.manufacturer,
-                    "model": phone.model,
-                    "price": phone.price,
-                    "displayType": phone.displayType,
-                    "displaySize": phone.displaySize
+            let meals = [...this.state.meals];
+            let meal = {...meals[this.state.mealIndexToInteractWith]};
+            meal.price = parseInt(price);
+            let mealToSend = {
+                meal: {
+                    "manufacturer": meal.manufacturer,
+                    "model": meal.model,
+                    "price": meal.price,
+                    "displayType": meal.displayType,
+                    "displaySize": meal.displaySize
                 }
             };
 
-            axios.put(`http://localhost:8080/updatePhone/${phone._id}`, phoneToSend)
+            axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend)
                 .then(res => {
                     if (res.status === 200) {
                         //TODO: do not mutate directly, use setState instead
-                        this.state.phones[this.state.phoneIndexToInteractWith] = phone;
+                        this.state.meals[this.state.mealIndexToInteractWith] = meal;
                         this.setState({
                             snackBarOpen: true,
                             snackBarMessage: res.data.msg,
@@ -244,23 +244,23 @@ class Phones extends Component {
 
     // BEGIN: ADD PHONE
 
-    handleOnAddPhoneFabClick = () => {
+    handleOnAddMealFabClick = () => {
         this.setState({
-            addNewPhoneDialogOpen: true
+            addNewMealDialogOpen: true
         });
     };
 
-    handleCloseAddNewPhoneDialog = (phone) => {
+    handleCloseAddNewMealDialog = (meal) => {
         this.setState({
-            addNewPhoneDialogOpen: false
+            addNewMealDialogOpen: false
         });
 
-        if (phone !== undefined) {
-            axios.post(`http://localhost:8080/addPhone`, phone)
+        if (meal !== undefined) {
+            axios.post(`http://localhost:8080/addMeal`, meal)
                 .then(res => {
                     if (res.status === 200) {
-                        let phones = this.state.phones;
-                        phones.push(res.data.phone);
+                        let meals = this.state.meals;
+                        meals.push(res.data.meal);
 
                         this.setState({
                             snackBarOpen: true,
@@ -282,17 +282,17 @@ class Phones extends Component {
 
     render() {
         return (
-            <div id="phones-root">
+            <div id="meals-root">
                 <Grid container justify="space-evenly" alignItems="center">
-                    {this.state.phones.map((phone, key) => (
-                            <Grid item key={phone._id} style={{margin: 10}}>
+                    {this.state.meals.map((meal, key) => (
+                            <Grid item key={meal._id} style={{margin: 10}}>
                                 <br/>
-                                <PhoneCard phone={phone} index={key}
-                                           handleAddPhoneButtonClick={this.handleAddPhoneButtonClick}
-                                           getStorePhoneAvailableIn={this.getStorePhoneAvailableIn}
-                                           handleDeletePhoneButtonClick={this.handleDeletePhoneButtonClick}
-                                           handleUpdatePhoneButtonClick={this.handleUpdatePhoneButtonClick}
-                                           storesAvailableIn={this.state.phones[key].storesPhoneAvailableIn}
+                                <MealCard meal={meal} index={key}
+                                           handleAddMealButtonClick={this.handleAddMealButtonClick}
+                                           getRestaurantMealAvailableIn={this.getRestaurantMealAvailableIn}
+                                           handleDeleteMealButtonClick={this.handleDeleteMealButtonClick}
+                                           handleUpdateMealButtonClick={this.handleUpdateMealButtonClick}
+                                           restaurantsAvailableIn={this.state.meals[key].restaurantsMealAvailableIn}
                                 />
                             </Grid>
                         )
@@ -302,37 +302,37 @@ class Phones extends Component {
                     <ResultSnackBar message={this.state.snackBarMessage} open={this.state.snackBarOpen}
                                     onClose={this.handleCloseSnackBar} severity={this.state.snackBarMessageSeverity}/>
                 </div>
-                <div id="addPhoneDialogDiv">
-                    <AddPhoneToStoreDialog onClose={this.handleCloseAddPhoneDialog} open={this.state.addPhoneDialogOpen}
-                                           storesToChooseFrom={this.state.storesToChooseFromToAddPhone}/>
+                <div id="addMealDialogDiv">
+                    <AddMealToRestaurantDialog onClose={this.handleCloseAddMealDialog} open={this.state.addMealDialogOpen}
+                                           restaurantsToChooseFrom={this.state.restaurantsToChooseFromToAddMeal}/>
                 </div>
-                <div id="deletePhoneAlertDialogDiv">
-                    <DeletePhoneAlertDialog onClose={this.handleCloseDeletePhoneDialog}
-                                            open={this.state.deletePhoneDialogOpen}
-                                            phone={this.state.phones[this.state.phoneIndexToInteractWith]}
+                <div id="deleteMealAlertDialogDiv">
+                    <DeleteMealAlertDialog onClose={this.handleCloseDeleteMealDialog}
+                                            open={this.state.deleteMealDialogOpen}
+                                            meal={this.state.meals[this.state.mealIndexToInteractWith]}
                     />
                 </div>
-                <div id="updatePhoneAlertDialogDiv">
-                    <UpdatePhoneDialog onClose={this.handleCloseUpdatePhoneDialog}
-                                       open={this.state.updatePhoneDialogOpen}
-                                       phone={this.state.phones[this.state.phoneIndexToInteractWith]}
+                <div id="updateMealAlertDialogDiv">
+                    <UpdateMealDialog onClose={this.handleCloseUpdateMealDialog}
+                                       open={this.state.updateMealDialogOpen}
+                                       meal={this.state.meals[this.state.mealIndexToInteractWith]}
                     />
                 </div>
-                <div id="addNewPhoneDialogDiv">
-                    <AddNewPhoneDialog onClose={this.handleCloseAddNewPhoneDialog}
-                                       open={this.state.addNewPhoneDialogOpen}/>
+                <div id="addNewMealDialogDiv">
+                    <AddNewMealDialog onClose={this.handleCloseAddNewMealDialog}
+                                       open={this.state.addNewMealDialogOpen}/>
                 </div>
-                <div id="addNewPhoneFabDiv">
-                    <Tooltip title="Add New Phone">
+                <div id="addNewMealFabDiv">
+                    <Tooltip title="Add New Meal">
                         <Fab color="secondary" aria-label="add" style={fabStyle}
-                             onClick={this.handleOnAddPhoneFabClick}>
+                             onClick={this.handleOnAddMealFabClick}>
                             <AddIcon/>
                         </Fab>
                     </Tooltip>
                 </div>
                 <div id="emptyCollection">
-                    {this.state.phones.length === 0 ?
-                        <EmptyCollection collectionName={"Phones"}
+                    {this.state.meals.length === 0 ?
+                        <EmptyCollection collectionName={"Meals"}
                                          responseArrived={this.state.responseArrived}/> : undefined}
                 </div>
             </div>
@@ -340,4 +340,4 @@ class Phones extends Component {
     }
 }
 
-export default Phones;
+export default Meals;

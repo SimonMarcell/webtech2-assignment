@@ -2,9 +2,9 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 
 const url = 'mongodb://localhost:27017';
-const databaseName = 'phonedatabase';
-const phonesCollectionName = 'phones';
-const storesCollectionName = 'stores';
+const databaseName = 'mealdatabase';
+const mealsCollectionName = 'meals';
+const restaurantsCollectionName = 'restaurants';
 
 const connection = MongoClient.connect(url);
 
@@ -16,46 +16,46 @@ function readRequests(findParams, callback, collectionName) {
     );
 }
 
-function listPhones(findParams, callback) {
+function listMeals(findParams, callback) {
     let query = null;
     if (findParams !== null) {
         query = {_id: ObjectId(findParams)};
     }
     readRequests(query, (result) => {
         callback(result);
-    }, phonesCollectionName);
+    }, mealsCollectionName);
 }
 
-function listStores(findParams, callback) {
+function listRestaurants(findParams, callback) {
     let query = null;
     if (findParams !== null) {
         query = {_id: ObjectId(findParams)};
     }
     readRequests(query, (result) => {
         callback(result);
-    }, storesCollectionName);
+    }, restaurantsCollectionName);
 }
 
-function addPhone(request, callback) {
-    const phoneToCheckBeforeAdding = {
+function addMeal(request, callback) {
+    const mealToCheckBeforeAdding = {
         manufacturer: request.manufacturer,
         model: request.model
     };
 
-    checkObjectBeforeAdding(phoneToCheckBeforeAdding, request, phonesCollectionName, (result, phone) => {
-            callback(result, phone);
+    checkObjectBeforeAdding(mealToCheckBeforeAdding, request, mealsCollectionName, (result, meal) => {
+            callback(result, meal);
         }
     );
 }
 
-function addStore(request, callback) {
-    const storeToCheckBeforeAdding = {
+function addRestaurant(request, callback) {
+    const restaurantToCheckBeforeAdding = {
         name: request.name,
         "location.town": request.location.town
     };
 
-    checkObjectBeforeAdding(storeToCheckBeforeAdding, request, storesCollectionName, (result, store) => {
-            callback(result, store);
+    checkObjectBeforeAdding(restaurantToCheckBeforeAdding, request, restaurantsCollectionName, (result, restaurant) => {
+            callback(result, restaurant);
         }
     );
 }
@@ -78,10 +78,10 @@ function checkObjectBeforeAdding(objectToCheck, request, collection, callback) {
     }, collection);
 }
 
-function deleteStore(storeId, callback) {
-    const query = {_id: ObjectId(storeId)};
+function deleteRestaurant(restaurantId, callback) {
+    const query = {_id: ObjectId(restaurantId)};
 
-    connection.then(client => client.db(databaseName).collection(storesCollectionName)
+    connection.then(client => client.db(databaseName).collection(restaurantsCollectionName)
         .deleteOne(query, (err, result) => {
             if (err) throw err;
             const {deletedCount} = result;
@@ -94,10 +94,10 @@ function deleteStore(storeId, callback) {
     );
 }
 
-function updatePhone(phoneId, request, callback) {
-    const query = {_id: ObjectId(phoneId)};
+function updateMeal(mealId, request, callback) {
+    const query = {_id: ObjectId(mealId)};
 
-    connection.then(client => client.db(databaseName).collection(phonesCollectionName)
+    connection.then(client => client.db(databaseName).collection(mealsCollectionName)
         .updateOne(query, {$set: request}, (err, result) => {
             if (err) throw err;
             let {matchedCount, modifiedCount} = result;
@@ -112,10 +112,10 @@ function updatePhone(phoneId, request, callback) {
     );
 }
 
-function deletePhone(phoneId, callback) {
-    const query = {_id: ObjectId(phoneId)};
+function deleteMeal(mealId, callback) {
+    const query = {_id: ObjectId(mealId)};
 
-    connection.then(client => client.db(databaseName).collection(phonesCollectionName)
+    connection.then(client => client.db(databaseName).collection(mealsCollectionName)
         .deleteOne(query, (err, result) => {
             if (err) throw err;
             const {deletedCount} = result;
@@ -128,10 +128,10 @@ function deletePhone(phoneId, callback) {
     );
 }
 
-function addPhoneToStore(storeId, phoneId, callback) {
-    connection.then(client => client.db(databaseName).collection(storesCollectionName)
-        .findOneAndUpdate({_id: ObjectId(storeId)},
-            {$addToSet: {availablePhones: ObjectId(phoneId)}},
+function addMealToRestaurant(restaurantId, mealId, callback) {
+    connection.then(client => client.db(databaseName).collection(restaurantsCollectionName)
+        .findOneAndUpdate({_id: ObjectId(restaurantId)},
+            {$addToSet: {availableMeals: ObjectId(mealId)}},
             {},
             (err, result) => {
                 if (err) throw err;
@@ -142,10 +142,10 @@ function addPhoneToStore(storeId, phoneId, callback) {
     );
 }
 
-function removePhoneFromStore(storeId, phoneId, callback) {
-    connection.then(client => client.db(databaseName).collection(storesCollectionName)
-        .updateOne({_id: ObjectId(storeId)},
-            {$pull: {availablePhones: ObjectId(phoneId)}},
+function removeMealFromRestaurant(restaurantId, mealId, callback) {
+    connection.then(client => client.db(databaseName).collection(restaurantsCollectionName)
+        .updateOne({_id: ObjectId(restaurantId)},
+            {$pull: {availableMeals: ObjectId(mealId)}},
             {},
             (err, result) => {
                 if (err) throw err;
@@ -155,40 +155,40 @@ function removePhoneFromStore(storeId, phoneId, callback) {
     );
 }
 
-function listPhonesFromStore(storeId, callback) {
-    const query = {_id: ObjectId(storeId)};
+function listMealsFromRestaurant(restaurantId, callback) {
+    const query = {_id: ObjectId(restaurantId)};
     readRequests(query, (result) => {
         if (result.length === 0) {
             callback(null);
         } else {
-            readRequests({_id: {$in: result[0].availablePhones}}, (result) => {
+            readRequests({_id: {$in: result[0].availableMeals}}, (result) => {
                 callback(result);
-            }, phonesCollectionName);
+            }, mealsCollectionName);
         }
-    }, storesCollectionName);
+    }, restaurantsCollectionName);
 }
 
-function listStoresContainingPhone(phoneId, callback) {
-    const query = {availablePhones: ObjectId(phoneId)};
+function listRestaurantsContainingMeal(mealId, callback) {
+    const query = {availableMeals: ObjectId(mealId)};
     readRequests(query, (result) => {
         let resultArray = [];
-        result.filter((store) => {
-            resultArray.push({_id: store._id, name: store.name});
+        result.filter((restaurant) => {
+            resultArray.push({_id: restaurant._id, name: restaurant.name});
         });
         callback(resultArray);
-    }, storesCollectionName);
+    }, restaurantsCollectionName);
 }
 
 module.exports = {
-    "addStore": addStore,
-    "addPhone": addPhone,
-    "listPhones": listPhones,
-    "listStores": listStores,
-    "updatePhone": updatePhone,
-    "deletePhone": deletePhone,
-    "deleteStore": deleteStore,
-    "addPhoneToStore": addPhoneToStore,
-    "removePhoneFromStore": removePhoneFromStore,
-    "listPhonesFromStore": listPhonesFromStore,
-    "listStoresContainingPhone": listStoresContainingPhone
+    "addRestaurant": addRestaurant,
+    "addMeal": addMeal,
+    "listMeals": listMeals,
+    "listRestaurants": listRestaurants,
+    "updateMeal": updateMeal,
+    "deleteMeal": deleteMeal,
+    "deleteRestaurant": deleteRestaurant,
+    "addMealToRestaurant": addMealToRestaurant,
+    "removeMealFromRestaurant": removeMealFromRestaurant,
+    "listMealsFromRestaurant": listMealsFromRestaurant,
+    "listRestaurantsContainingMeal": listRestaurantsContainingMeal
 };

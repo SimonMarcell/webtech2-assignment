@@ -11,8 +11,8 @@ import ListItem from "@material-ui/core/ListItem";
 import EuroIcon from "@material-ui/icons/Euro";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
-export default function UpdatePhoneDialog(props) {
-    const {onClose, phone, open} = props;
+export default function UpdateMealDialog(props) {
+    const {onClose, meal, open} = props;
 
     const [price, setPrice] = React.useState(0);
 
@@ -23,7 +23,7 @@ export default function UpdatePhoneDialog(props) {
 
     const handleSubmit = () => {
         if (price === 0) {
-            onClose(phone.price);
+            onClose(meal.price);
         } else {
             onClose(price);
         }
@@ -46,13 +46,13 @@ export default function UpdatePhoneDialog(props) {
         return null;
     };
 
-    return phone === undefined ? null : (
+    return meal === undefined ? null : (
         <div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle>Modify Phone</DialogTitle>
+                <DialogTitle>Modify Meal</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can modify the phone's price.
+                        Here you can modify the meal's price.
                     </DialogContentText>
                     <DialogContentText>
                         Other values can not be modified because<br/>those are immutable.
@@ -60,11 +60,11 @@ export default function UpdatePhoneDialog(props) {
                     <List>
                         <ListItem>
                             <TextField disabled fullWidth variant="outlined" label="Manufacturer"
-                                       defaultValue={phone.manufacturer}/>
+                                       defaultValue={meal.manufacturer}/>
                         </ListItem>
                         <ListItem>
                             <TextField disabled fullWidth variant="outlined" label="Model"
-                                       defaultValue={phone.model}/>
+                                       defaultValue={meal.model}/>
                         </ListItem>
                         <ListItem>
                             <TextField
@@ -72,7 +72,7 @@ export default function UpdatePhoneDialog(props) {
                                 helperText={price === -1 ? "Price must be greater than 0" : ""
                                 || price === -2 ? "Price must digit-only" : ""}
                                 type="number"
-                                defaultValue={phone.price}
+                                defaultValue={meal.price}
                                 onChange={onChangePrice}
                                 label="Price"
                                 variant="filled"
@@ -88,11 +88,11 @@ export default function UpdatePhoneDialog(props) {
                         </ListItem>
                         <ListItem>
                             <TextField disabled fullWidth variant="outlined" label="Display Type"
-                                       defaultValue={phone.displayType}/>
+                                       defaultValue={meal.displayType}/>
                         </ListItem>
                         <ListItem>
                             <TextField disabled fullWidth variant="outlined" label="Display Size"
-                                       defaultValue={phone.displaySize}/>
+                                       defaultValue={meal.displaySize}/>
                         </ListItem>
                     </List>
                 </DialogContent>

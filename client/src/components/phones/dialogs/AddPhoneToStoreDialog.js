@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {blue} from '@material-ui/core/colors';
-import StoreIcon from "@material-ui/icons/Store";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
 
 const useStyles = makeStyles({
     avatar: {
@@ -18,16 +18,16 @@ const useStyles = makeStyles({
     },
 });
 
-export default function AddPhoneToStoreDialog(props) {
+export default function AddMealToRestaurantDialog(props) {
     const classes = useStyles();
-    const {onClose, open, storesToChooseFrom} = props;
+    const {onClose, open, restaurantsToChooseFrom} = props;
 
-    const handleClose = (storeId, storeName) => {
-        // Considering that we got a small amount of stores to work with, handling the clicks on the items and closing
+    const handleClose = (restaurantId, restaurantName) => {
+        // Considering that we got a small amount of restaurants to work with, handling the clicks on the items and closing
         // the dialog can be done the following way to reduce lines of code.
         // Although note, that when processing larger data separate handler should be used instead.
-        if (storesToChooseFrom.some(store => store._id === storeId)) {
-            onClose(storeId, storeName);
+        if (restaurantsToChooseFrom.some(restaurant => restaurant._id === restaurantId)) {
+            onClose(restaurantId, restaurantName);
         } else {
             onClose(undefined, undefined);
         }
@@ -35,16 +35,16 @@ export default function AddPhoneToStoreDialog(props) {
 
     return (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle>Select store to add phone in</DialogTitle>
+            <DialogTitle>Select restaurant to add meal in</DialogTitle>
             <List>
-                {storesToChooseFrom.map((store) => (
-                    <ListItem button onClick={() => handleClose(store._id, store.name)} key={store._id}>
+                {restaurantsToChooseFrom.map((restaurant) => (
+                    <ListItem button onClick={() => handleClose(restaurant._id, restaurant.name)} key={restaurant._id}>
                         <ListItemAvatar>
                             <Avatar className={classes.avatar}>
-                                <StoreIcon/>
+                                <RestaurantIcon/>
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={store.name}/>
+                        <ListItemText primary={restaurant.name}/>
                     </ListItem>
                 ))}
             </List>
@@ -52,7 +52,7 @@ export default function AddPhoneToStoreDialog(props) {
     );
 }
 
-AddPhoneToStoreDialog.propTypes = {
+AddMealToRestaurantDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired
 };

@@ -34,7 +34,7 @@ const ratings = [
     },
 ];
 
-export default function AddNewStoreDialog(props) {
+export default function AddNewRestaurantDialog(props) {
     const {onClose, open} = props;
 
     const [name, setName] = React.useState();
@@ -45,13 +45,13 @@ export default function AddNewStoreDialog(props) {
     const [rating, setRating] = React.useState(3);
 
     const handleClose = () => {
-        resetStoreValues();
+        resetRestaurantValues();
         onClose();
     };
 
     const handleSubmit = () => {
-        const store = {
-            store: {
+        const restaurant = {
+            restaurant: {
                 name: name,
                 location: {
                     zipCode: zipCode,
@@ -60,14 +60,14 @@ export default function AddNewStoreDialog(props) {
                     address: address
                 },
                 rating: rating,
-                availablePhones: []
+                availableMeals: []
             }
         };
-        resetStoreValues();
-        onClose(store);
+        resetRestaurantValues();
+        onClose(restaurant);
     };
 
-    function resetStoreValues() {
+    function resetRestaurantValues() {
         setName(undefined);
         setZipCode(undefined);
         setCountry(undefined);
@@ -103,10 +103,10 @@ export default function AddNewStoreDialog(props) {
     return (
         <div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle>Add New Store</DialogTitle>
+                <DialogTitle>Add New Restaurant</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can detail the new store's attributes.
+                        Here you can detail the new restaurant's attributes.
                     </DialogContentText>
                     <List>
                         <ListItem>
@@ -176,7 +176,7 @@ export default function AddNewStoreDialog(props) {
                                 label="Rating"
                                 value={rating}
                                 onChange={onRatingChange}
-                                helperText="Select the store's rating"
+                                helperText="Select the restaurant's rating"
                                 variant="outlined"
                                 fullWidth
                             >
@@ -208,7 +208,7 @@ export default function AddNewStoreDialog(props) {
     );
 }
 
-AddNewStoreDialog.propTypes = {
+AddNewRestaurantDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired
 };

@@ -10,7 +10,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
-import SmartphoneIcon from '@material-ui/icons/Smartphone';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 import EuroIcon from '@material-ui/icons/Euro';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -18,7 +18,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
-import StoreIcon from "@material-ui/icons/Store";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
 import ListItemText from "@material-ui/core/ListItemText";
 import {blue} from "@material-ui/core/colors";
 import HeightIcon from '@material-ui/icons/Height';
@@ -48,33 +48,33 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         fontSize: '20px'
     },
-    store: {
+    restaurant: {
         backgroundColor: blue[100],
         color: blue[600],
     },
     displaySizeIcon: {
         transform: 'rotate(45deg)',
     },
-    smartPhoneIcon: {
+    smartMealIcon: {
         marginTop: '40px',
         width: '70px',
         height: '70px'
     }
 }));
 
-export default function PhoneCard(props) {
-    const {phone, storesAvailableIn, index} = props;
+export default function MealCard(props) {
+    const {meal, restaurantsAvailableIn, index} = props;
 
     const [wrapEnabled, setWrapEnabled] = React.useState(true);
 
-    const fetchStoresPhoneAvailableIn = async () => {
-        const fetchStoresPhoneAvailableIn = await fetch(
-            `http://localhost:8080/listStoresContainingPhone/${phone._id}`
+    const fetchRestaurantsMealAvailableIn = async () => {
+        const fetchRestaurantsMealAvailableIn = await fetch(
+            `http://localhost:8080/listRestaurantsContainingMeal/${meal._id}`
         );
-        const storesAvailableIn = await fetchStoresPhoneAvailableIn.json();
-        const stores = await storesAvailableIn;
-        props.getStorePhoneAvailableIn(stores, index);
-        return storesAvailableIn;
+        const restaurantsAvailableIn = await fetchRestaurantsMealAvailableIn.json();
+        const restaurants = await restaurantsAvailableIn;
+        props.getRestaurantMealAvailableIn(restaurants, index);
+        return restaurantsAvailableIn;
     };
 
     const classes = useStyles();
@@ -82,50 +82,50 @@ export default function PhoneCard(props) {
 
     const handleExpandClick = async () => {
         if (!expanded) {
-            await fetchStoresPhoneAvailableIn();
+            await fetchRestaurantsMealAvailableIn();
         }
         setExpanded(!expanded);
         setWrapEnabled(!wrapEnabled);
     };
 
-    const handleAddPhoneButtonClick = async () => {
-        const fetch = await fetchStoresPhoneAvailableIn();
-        const stores = await fetch;
-        props.handleAddPhoneButtonClick(index, stores);
+    const handleAddMealButtonClick = async () => {
+        const fetch = await fetchRestaurantsMealAvailableIn();
+        const restaurants = await fetch;
+        props.handleAddMealButtonClick(index, restaurants);
     };
 
-    const handleUpdatePhoneButtonClick = () => {
-        props.handleUpdatePhoneButtonClick(index)
+    const handleUpdateMealButtonClick = () => {
+        props.handleUpdateMealButtonClick(index)
     };
 
-    const handleDeletePhoneButtonClick = async () => {
-        await fetchStoresPhoneAvailableIn();
-        props.handleDeletePhoneButtonClick(index)
+    const handleDeleteMealButtonClick = async () => {
+        await fetchRestaurantsMealAvailableIn();
+        props.handleDeleteMealButtonClick(index)
     };
 
-    return phone === undefined ? null : (
+    return meal === undefined ? null : (
         <Card className={classes.root}>
             <CardContent>
                 <div className={classes.content}>
-                    <SmartphoneIcon className={classes.smartPhoneIcon}/>
+                    <FastfoodIcon className={classes.smartMealIcon}/>
                 </div>
                 <Typography gutterBottom variant="h5" component="h2" noWrap={wrapEnabled}>
-                    {phone.manufacturer} {phone.model}
+                    {meal.manufacturer} {meal.model}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <Tooltip title="Add Phone to Store">
-                    <IconButton aria-label="delete" onClick={handleAddPhoneButtonClick}>
+                <Tooltip title="Add Meal to Restaurant">
+                    <IconButton aria-label="delete" onClick={handleAddMealButtonClick}>
                         <AddIcon/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Modify Phone">
-                    <IconButton aria-label="edit" onClick={handleUpdatePhoneButtonClick}>
+                <Tooltip title="Modify Meal">
+                    <IconButton aria-label="edit" onClick={handleUpdateMealButtonClick}>
                         <EditIcon/>
                     </IconButton>
                 </Tooltip>
-                <Tooltip title="Delete Phone">
-                    <IconButton aria-label="delete" onClick={handleDeletePhoneButtonClick}>
+                <Tooltip title="Delete Meal">
+                    <IconButton aria-label="delete" onClick={handleDeleteMealButtonClick}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>
@@ -143,28 +143,28 @@ export default function PhoneCard(props) {
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <Typography className={classes.expandText}>
-                        <EuroIcon/> {phone.price}
+                        <EuroIcon/> {meal.price}
                     </Typography>
                     <Typography className={classes.expandText} style={{marginTop: 10}}>
-                        <HeightIcon className={classes.displaySizeIcon}/> {phone.displaySize}" {phone.displayType}
+                        <HeightIcon className={classes.displaySizeIcon}/> {meal.displaySize}" {meal.displayType}
                     </Typography>
                     <div>
-                        {storesAvailableIn !== undefined && storesAvailableIn.length > 0 &&
+                        {restaurantsAvailableIn !== undefined && restaurantsAvailableIn.length > 0 &&
                         <div>
                             <Typography className={classes.expandText} style={{marginTop: 20}}>
-                                Available in the following stores:
+                                Available in the following restaurants:
                             </Typography>
                             <List>
                                 <br/>
                                 {
-                                    storesAvailableIn.map((store) => (
-                                        <ListItem key={store._id}>
+                                    restaurantsAvailableIn.map((restaurant) => (
+                                        <ListItem key={restaurant._id}>
                                             <ListItemAvatar>
-                                                <Avatar className={classes.store}>
-                                                    <StoreIcon/>
+                                                <Avatar className={classes.restaurant}>
+                                                    <RestaurantIcon/>
                                                 </Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary={store.name}/>
+                                            <ListItemText primary={restaurant.name}/>
                                         </ListItem>
                                     ))
                                 }

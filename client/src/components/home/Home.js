@@ -3,9 +3,9 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import {makeStyles} from "@material-ui/core/styles";
 import CardContent from "@material-ui/core/CardContent";
-import SmartphoneIcon from "@material-ui/icons/Smartphone";
+import FastfoodIcon from "@material-ui/icons/Fastfood";
 import Card from "@material-ui/core/Card";
-import StoreIcon from "@material-ui/icons/Store";
+import RestaurantIcon from "@material-ui/icons/Restaurant";
 import CheckIcon from '@material-ui/icons/Check';
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
@@ -65,10 +65,10 @@ export default function Home() {
                     <Card className={classes.card}>
                         <CardContent>
                             <div className={classes.content}>
-                                <SmartphoneIcon className={classes.cardIcon}/>
+                                <FastfoodIcon className={classes.cardIcon}/>
                             </div>
                             <Typography gutterBottom variant="h5" component="h2">
-                                Phones
+                                Meals
                             </Typography>
                             <List>
                                 <br/>
@@ -78,7 +78,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="List Phones from database"/>
+                                    <ListItemText primary="List Meals from database"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -86,7 +86,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="List Stores for each Phone that is available in"/>
+                                    <ListItemText primary="List Restaurants for each Meal that is available in"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -94,7 +94,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="Add Phone to database"/>
+                                    <ListItemText primary="Add Meal to database"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -102,7 +102,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="Modify Phone in database"/>
+                                    <ListItemText primary="Modify Meal in database"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -110,7 +110,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="Delete Phone from database"/>
+                                    <ListItemText primary="Delete Meal from database"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -118,7 +118,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="Add Phone to Store"/>
+                                    <ListItemText primary="Add Meal to Restaurant"/>
                                 </ListItem>
                             </List>
                         </CardContent>
@@ -128,10 +128,10 @@ export default function Home() {
                     <Card className={classes.card}>
                         <CardContent>
                             <div className={classes.content}>
-                                <StoreIcon className={classes.cardIcon}/>
+                                <RestaurantIcon className={classes.cardIcon}/>
                             </div>
                             <Typography gutterBottom variant="h5" component="h2">
-                                Stores
+                                Restaurants
                             </Typography>
                             <List>
                                 <br/>
@@ -141,7 +141,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="List Stores from database"/>
+                                    <ListItemText primary="List Restaurants from database"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -149,7 +149,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="List available Phones in each Store"/>
+                                    <ListItemText primary="List available Meals in each Restaurant"/>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemAvatar>
@@ -157,7 +157,7 @@ export default function Home() {
                                             <CheckIcon/>
                                         </Avatar>
                                     </ListItemAvatar>
-                                    <ListItemText primary="Remove Phone from Store"/>
+                                    <ListItemText primary="Remove Meal from Restaurant"/>
                                 </ListItem>
                             </List>
                         </CardContent>

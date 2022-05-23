@@ -47,9 +47,9 @@ export default function NavTabs(props) {
     const classes = useStyles();
     const path = window.location.pathname;
     let refIndex;
-    if (path === "/stores") {
+    if (path === "/restaurants") {
         refIndex = 2;
-    } else if (path === "/phones") {
+    } else if (path === "/meals") {
         refIndex = 1;
     } else {
         refIndex = 0;
@@ -72,10 +72,10 @@ export default function NavTabs(props) {
                               centered
                         >
                             <Tab label={<span className={classes.tabLabel}>Home</span>} component={Link} to="/"/>
-                            <Tab label={<span className={classes.tabLabel}>Phones</span>} component={Link}
-                                 to="/phones"/>
-                            <Tab label={<span className={classes.tabLabel}>Stores</span>} component={Link}
-                                 to="/stores"/>
+                            <Tab label={<span className={classes.tabLabel}>Meals</span>} component={Link}
+                                 to="/meals"/>
+                            <Tab label={<span className={classes.tabLabel}>Restaurants</span>} component={Link}
+                                 to="/restaurants"/>
                         </Tabs>
                     </AppBar>
                 </HideOnScroll>
