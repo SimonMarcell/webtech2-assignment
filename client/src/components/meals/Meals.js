@@ -202,22 +202,20 @@ class Meals extends Component {
         });
     };
 
-    handleCloseUpdateMealDialog = (price) => {
+    handleCloseUpdateMealDialog = (calories) => {
         this.setState({
             updateMealDialogOpen: false
         });
 
-        if (price !== undefined) {
+        if (calories !== undefined) {
             let meals = [...this.state.meals];
             let meal = {...meals[this.state.mealIndexToInteractWith]};
-            meal.price = parseInt(price);
+            meal.calories = parseInt(calories);
             let mealToSend = {
                 meal: {
-                    "manufacturer": meal.manufacturer,
-                    "model": meal.model,
-                    "price": meal.price,
-                    "displayType": meal.displayType,
-                    "displaySize": meal.displaySize
+                    "name": meal.name,
+                    "type": meal.type,
+                    "calories": meal.calories
                 }
             };
 

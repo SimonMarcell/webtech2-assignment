@@ -8,39 +8,38 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import EuroIcon from "@material-ui/icons/Euro";
 import InputAdornment from "@material-ui/core/InputAdornment";
 
 export default function UpdateMealDialog(props) {
     const {onClose, meal, open} = props;
 
-    const [price, setPrice] = React.useState(0);
+    const [calories, setCalories] = React.useState(0);
 
     const handleClose = () => {
         onClose();
-        setPrice(0);
+        setCalories(0);
     };
 
     const handleSubmit = () => {
-        if (price === 0) {
-            onClose(meal.price);
+        if (calories === 0) {
+            onClose(meal.calories);
         } else {
-            onClose(price);
+            onClose(calories);
         }
-        setPrice(0);
+        setCalories(0);
     };
 
-    const onChangePrice = (event) => {
+    const onChangeCalories = (event) => {
         const {value} = event.target;
 
         if (value.match('.')) {
             if (value > 0) {
-                setPrice(value);
+                setCalories(value);
             } else {
-                setPrice(-1);
+                setCalories(-1);
             }
         } else {
-            setPrice(-2);
+            setCalories(-2);
         }
 
         return null;
@@ -52,47 +51,39 @@ export default function UpdateMealDialog(props) {
                 <DialogTitle>Modify Meal</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Here you can modify the meal's price.
+                        Here you can modify the meal's calorie value.
                     </DialogContentText>
                     <DialogContentText>
                         Other values can not be modified because<br/>those are immutable.
                     </DialogContentText>
                     <List>
                         <ListItem>
-                            <TextField disabled fullWidth variant="outlined" label="Manufacturer"
-                                       defaultValue={meal.manufacturer}/>
-                        </ListItem>
-                        <ListItem>
-                            <TextField disabled fullWidth variant="outlined" label="Model"
-                                       defaultValue={meal.model}/>
+                            <TextField disabled fullWidth variant="outlined" label="Name"
+                                       defaultValue={meal.name}/>
                         </ListItem>
                         <ListItem>
                             <TextField
-                                error={price < 0}
-                                helperText={price === -1 ? "Price must be greater than 0" : ""
-                                || price === -2 ? "Price must digit-only" : ""}
+                                error={calories < 0}
+                                helperText={calories === -1 ? "Calories must be greater than 0" : ""
+                                || calories === -2 ? "Calories must digit-only" : ""}
                                 type="number"
-                                defaultValue={meal.price}
-                                onChange={onChangePrice}
-                                label="Price"
+                                defaultValue={meal.calories}
+                                onChange={onChangeCalories}
+                                label="Calories"
                                 variant="filled"
                                 fullWidth
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <EuroIcon/>
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            kcal
                                         </InputAdornment>
                                     ),
                                 }}
                             />
                         </ListItem>
                         <ListItem>
-                            <TextField disabled fullWidth variant="outlined" label="Display Type"
-                                       defaultValue={meal.displayType}/>
-                        </ListItem>
-                        <ListItem>
-                            <TextField disabled fullWidth variant="outlined" label="Display Size"
-                                       defaultValue={meal.displaySize}/>
+                            <TextField disabled fullWidth variant="outlined" label="Type"
+                                       defaultValue={meal.type}/>
                         </ListItem>
                     </List>
                 </DialogContent>
@@ -100,7 +91,7 @@ export default function UpdateMealDialog(props) {
                     <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={price === -1 || price === -2} color="secondary"
+                    <Button onClick={handleSubmit} disabled={calories === -1 || calories === -2} color="secondary"
                             variant="contained">
                         Submit
                     </Button>

@@ -112,7 +112,13 @@ router.put('/updateMeal/:id', (req, res) => {
         return;
     }
 
-    requestService.updateMeal(req.params.id, req.body['meal'], (result) => {
+    let meal = {
+        "name": req.body['meal']['name'],
+        "type": req.body['meal']['type'],
+        "calories": req.body['meal']['calories']
+    }
+
+    requestService.updateMeal(req.params.id, meal, (result) => {
         switch (result) {
             case 0:
                 res.status(200).json({msg: `Meal updated with id: ${req.params.id}`});
