@@ -8,30 +8,26 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import EuroIcon from "@material-ui/icons/Euro";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
 
-const displayTypes = [
+const mealTypes = [
     {
-        value: 'OLED',
-        label: 'OLED',
+        value: 'Main Dish',
+        label: 'Main Dish',
     },
     {
-        value: 'LCD',
-        label: 'LCD',
+        value: 'Side Dish',
+        label: 'Side Dish',
     }
 ];
 
 export default function AddNewMealDialog(props) {
     const {onClose, open} = props;
 
-    const [manufacturer, setManufacturer] = React.useState();
-    const [model, setModel] = React.useState();
-    const [price, setPrice] = React.useState(0);
-    const [displayType, setDisplayType] = React.useState('OLED');
-    const [displaySize, setDisplaySize] = React.useState(5.8);
+    const [name, setName] = React.useState();
+    const [mealType, setMealType] = React.useState('Main Dish');
+    const [calories, setCalories] = React.useState(0);
 
     const handleClose = () => {
         resetMealValues();
@@ -41,11 +37,9 @@ export default function AddNewMealDialog(props) {
     const handleSubmit = () => {
         const meal = {
             meal: {
-                manufacturer: manufacturer,
-                model: model,
-                price: Number(price),
-                displayType: displayType,
-                displaySize: Number(displaySize)
+                name: name,
+                type: mealType,
+                calories: Number(calories),
             }
         };
         resetMealValues();
@@ -53,54 +47,35 @@ export default function AddNewMealDialog(props) {
     };
 
     function resetMealValues() {
-        setManufacturer(undefined);
-        setModel(undefined);
-        setPrice(0);
-        setDisplayType('OLED');
-        setDisplaySize(5.8);
+        setName(undefined);
+        setCalories(0);
+        setMealType('Main Dish');
     }
 
-    const onManufacturerChange = (event) => {
+
+    const onNameChange = (event) => {
         const {value} = event.target;
-        setManufacturer(value);
+        setName(value);
     };
 
-    const onModelChange = (event) => {
-        const {value} = event.target;
-        setModel(value);
-    };
-
-    const onChangePrice = (event) => {
+    const onChangeCalories = (event) => {
         const {value} = event.target;
 
         if (value.match('.')) {
             if (value > 0) {
-                setPrice(value);
+                setCalories(value);
             } else {
-                setPrice(-1);
+                setCalories(-1);
             }
         } else {
-            setPrice(-2);
+            setCalories(-2);
         }
     };
 
-    const onDisplayTypeChange = (event) => {
-        setDisplayType(event.target.value);
+    const onMealTypeChange = (event) => {
+        setMealType(event.target.value);
     };
 
-    const onDisplaySizeChange = (event) => {
-        const {value} = event.target;
-
-        if (value.match('.')) {
-            if (value > 0) {
-                setDisplaySize(value);
-            } else {
-                setDisplaySize(-1);
-            }
-        } else {
-            setDisplaySize(-2);
-        }
-    };
 
     return (
         <div>
@@ -114,23 +89,11 @@ export default function AddNewMealDialog(props) {
                         <ListItem>
                             <TextField required
                                        autoComplete="off"
-                                       error={manufacturer === ''}
-                                       helperText={manufacturer === '' ? 'Manufacturer must not be empty' : ''}
-                                       onBlur={onManufacturerChange}
-                                       onChange={onManufacturerChange}
-                                       label="Manufacturer"
-                                       variant="outlined"
-                                       fullWidth
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <TextField required
-                                       autoComplete="off"
-                                       helperText={model === '' ? 'Model must not be empty' : ''}
-                                       error={model === ''}
-                                       onBlur={onModelChange}
-                                       onChange={onModelChange}
-                                       label="Model"
+                                       helperText={name === '' ? 'Name must not be empty' : ''}
+                                       error={name === ''}
+                                       onBlur={onNameChange}
+                                       onChange={onNameChange}
+                                       label="Name"
                                        variant="outlined"
                                        fullWidth
                             />
@@ -138,17 +101,17 @@ export default function AddNewMealDialog(props) {
                         <ListItem>
                             <TextField
                                 required
-                                error={price < 0}
-                                helperText={price === -1 ? "Price must be greater than 0" : ""
-                                || price === -2 ? "Price must digit-only" : ""}
+                                error={calories < 0}
+                                helperText={calories === -1 ? "Calories must be greater than 0" : ""
+                                || calories === -2 ? "Calories must digit-only" : ""}
                                 type="number"
-                                onBlur={onChangePrice}
-                                onChange={onChangePrice}
-                                label="Price"
+                                onBlur={onChangeCalories}
+                                onChange={onChangeCalories}
+                                label="Calories"
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <EuroIcon/>
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            kcal
                                         </InputAdornment>
                                     ),
                                 }}
@@ -160,36 +123,19 @@ export default function AddNewMealDialog(props) {
                             <TextField
                                 required
                                 select
-                                label="Display Type"
-                                value={displayType}
-                                onChange={onDisplayTypeChange}
-                                helperText="Select the desired display type"
+                                label="Meal Type"
+                                value={mealType}
+                                onChange={onMealTypeChange}
+                                helperText="Select the desired meal type"
                                 variant="outlined"
                                 fullWidth
                             >
-                                {displayTypes.map((option) => (
+                                {mealTypes.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
                             </TextField>
-                        </ListItem>
-                        <ListItem>
-                            <TextField required
-                                       error={displaySize < 0}
-                                       onBlur={onDisplaySizeChange}
-                                       onChange={onDisplaySizeChange}
-                                       defaultValue={displaySize}
-                                       label="Display Size"
-                                       helperText={displaySize === -1 ? "Display size must be greater than 0" : ""
-                                       || displaySize === -2 ? "Display size must digit-only" : ""}
-                                       type="number"
-                                       inputProps={{
-                                           step: 0.1
-                                       }}
-                                       variant="outlined"
-                                       fullWidth
-                            />
                         </ListItem>
                     </List>
                 </DialogContent>
@@ -198,11 +144,9 @@ export default function AddNewMealDialog(props) {
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} disabled={
-                        manufacturer === '' || manufacturer === undefined ||
-                        model === '' || model === undefined ||
-                        price <= 0 ||
-                        displayType === '' ||
-                        displaySize <= 0
+                        name === '' || name === undefined ||
+                        calories <= 0 ||
+                        mealType === ''
                     } color="secondary" variant="contained">
                         Submit
                     </Button>

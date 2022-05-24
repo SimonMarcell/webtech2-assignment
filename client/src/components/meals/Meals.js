@@ -288,11 +288,11 @@ class Meals extends Component {
                             <Grid item key={meal._id} style={{margin: 10}}>
                                 <br/>
                                 <MealCard meal={meal} index={key}
-                                           handleAddMealButtonClick={this.handleAddMealButtonClick}
-                                           getRestaurantMealAvailableIn={this.getRestaurantMealAvailableIn}
-                                           handleDeleteMealButtonClick={this.handleDeleteMealButtonClick}
-                                           handleUpdateMealButtonClick={this.handleUpdateMealButtonClick}
-                                           restaurantsAvailableIn={this.state.meals[key].restaurantsMealAvailableIn}
+                                          handleAddMealButtonClick={this.handleAddMealButtonClick}
+                                          getRestaurantMealAvailableIn={this.getRestaurantMealAvailableIn}
+                                          handleDeleteMealButtonClick={this.handleDeleteMealButtonClick}
+                                          handleUpdateMealButtonClick={this.handleUpdateMealButtonClick}
+                                          restaurantsAvailableIn={this.state.meals[key].restaurantsMealAvailableIn}
                                 />
                             </Grid>
                         )
@@ -303,24 +303,25 @@ class Meals extends Component {
                                     onClose={this.handleCloseSnackBar} severity={this.state.snackBarMessageSeverity}/>
                 </div>
                 <div id="addMealDialogDiv">
-                    <AddMealToRestaurantDialog onClose={this.handleCloseAddMealDialog} open={this.state.addMealDialogOpen}
-                                           restaurantsToChooseFrom={this.state.restaurantsToChooseFromToAddMeal}/>
+                    <AddMealToRestaurantDialog onClose={this.handleCloseAddMealDialog}
+                                               open={this.state.addMealDialogOpen}
+                                               restaurantsToChooseFrom={this.state.restaurantsToChooseFromToAddMeal}/>
                 </div>
                 <div id="deleteMealAlertDialogDiv">
                     <DeleteMealAlertDialog onClose={this.handleCloseDeleteMealDialog}
-                                            open={this.state.deleteMealDialogOpen}
-                                            meal={this.state.meals[this.state.mealIndexToInteractWith]}
+                                           open={this.state.deleteMealDialogOpen}
+                                           meal={this.state.meals[this.state.mealIndexToInteractWith]}
                     />
                 </div>
                 <div id="updateMealAlertDialogDiv">
                     <UpdateMealDialog onClose={this.handleCloseUpdateMealDialog}
-                                       open={this.state.updateMealDialogOpen}
-                                       meal={this.state.meals[this.state.mealIndexToInteractWith]}
+                                      open={this.state.updateMealDialogOpen}
+                                      meal={this.state.meals[this.state.mealIndexToInteractWith]}
                     />
                 </div>
                 <div id="addNewMealDialogDiv">
                     <AddNewMealDialog onClose={this.handleCloseAddNewMealDialog}
-                                       open={this.state.addNewMealDialogOpen}/>
+                                      open={this.state.addNewMealDialogOpen}/>
                 </div>
                 <div id="addNewMealFabDiv">
                     <Tooltip title="Add New Meal">

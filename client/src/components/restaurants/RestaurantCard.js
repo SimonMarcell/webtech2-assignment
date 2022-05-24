@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import Card from "@material-ui/core/Card";
 import {makeStyles} from "@material-ui/core/styles";
-import StarIcon from '@material-ui/icons/Star';
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import IconButton from "@material-ui/core/IconButton";
@@ -38,12 +37,6 @@ export default function MealCard(props) {
     const {restaurant, index} = props;
     const classes = useStyles();
 
-    const [starsToRender, setStarsToRender] = React.useState([]);
-
-    useEffect(() => {
-        setStarsToRenderEffect();
-    }, []);
-
     const fetchMealsFromRestaurant = async () => {
         const fetchMealsFromRestaurant = await fetch(
             `http://localhost:8080/listMealsFromRestaurant/${restaurant._id}`
@@ -52,14 +45,6 @@ export default function MealCard(props) {
         const meals = await mealsFromRestaurant;
         props.fetchMealsFromRestaurant(meals);
         return mealsFromRestaurant;
-    };
-
-    const setStarsToRenderEffect = () => {
-        if (restaurant !== undefined) {
-            for (let i = 0; i < parseInt(restaurant.rating); i++) {
-                setStarsToRender(array => [...array, i])
-            }
-        }
     };
 
     const handleListMealsFromRestaurantButtonClick = async () => {
@@ -81,11 +66,6 @@ export default function MealCard(props) {
                     {restaurant.name}
                 </Typography>
                 <br/>
-                {
-                    starsToRender.map(i => (
-                        <StarIcon key={i}/>
-                    ))
-                }
                 <div>
                     <Typography className={classes.locationTitle}>
                         {restaurant.location.zipCode} {restaurant.location.country}
@@ -102,7 +82,8 @@ export default function MealCard(props) {
                     </Typography>
                 </Button>
                 <Tooltip title="Delete Restaurant">
-                    <IconButton aria-label="delete" style={{marginLeft: "auto"}} onClick={handleDeleteRestaurantButtonClick}>
+                    <IconButton aria-label="delete" style={{marginLeft: "auto"}}
+                                onClick={handleDeleteRestaurantButtonClick}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>

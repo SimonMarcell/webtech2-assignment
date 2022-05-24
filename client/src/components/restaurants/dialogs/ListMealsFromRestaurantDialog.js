@@ -44,7 +44,7 @@ export default function ListMealsFromRestaurantDialog(props) {
                                 <FastfoodIcon/>
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={meal.manufacturer} secondary={meal.model}/>
+                        <ListItemText primary={meal.name} secondary={meal.type}/>
                         <Tooltip title="Remove Meal from Restaurant">
                             <IconButton aria-label="edit"
                                         onClick={() => handleRemoveMealButtonClick(meal._id, index)}>

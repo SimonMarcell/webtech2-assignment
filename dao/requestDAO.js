@@ -38,8 +38,8 @@ function listRestaurants(findParams, callback) {
 
 function addMeal(request, callback) {
     const mealToCheckBeforeAdding = {
-        manufacturer: request.manufacturer,
-        model: request.model
+        name: request.name,
+        type: request.type
     };
 
     checkObjectBeforeAdding(mealToCheckBeforeAdding, request, mealsCollectionName, (result, meal) => {

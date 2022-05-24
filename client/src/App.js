@@ -5,48 +5,31 @@ import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom
 import Meals from "./components/meals/Meals";
 import Navigation from "./components/navigation/Navigation";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Fab from "@material-ui/core/Fab";
 import {CssBaseline} from "@material-ui/core";
-import Tooltip from "@material-ui/core/Tooltip";
 
-const fabStyle = {
-    margin: 0,
-    top: 'auto',
-    right: 'auto',
-    bottom: 20,
-    left: 20,
-    position: 'fixed',
-};
 
 function App() {
-
-    const [darkModeEnabled, setDarkModeEnable] = React.useState(true);
 
     const theme = React.useMemo(
         () =>
             createMuiTheme({
                 palette: {
-                    type: darkModeEnabled ? 'dark' : 'light',
+                    type: 'dark',
                     primary: {
                         // light: will be calculated from palette.primary.main,
-                        main: darkModeEnabled ? '#f2ec2e' : '#0066ff'
+                        main: '#78ec9d'
                         // dark: will be calculated from palette.primary.main,
                         // contrastText: will be calculated to contrast with palette.primary.main
                     },
                     secondary: {
                         // light: will be calculated from palette.secondary.main
-                        main: darkModeEnabled ? '#f2ec2e' : '#f50057',
+                        main: '#78ec9d',
                         // dark: will be calculated from palette.secondary.main
-                        contrastText: darkModeEnabled ? '#000000' : '#ffffff'
+                        contrastText: '#000000'
                     }
                 }
-            }), [darkModeEnabled]);
+            }), []);
 
-
-    const handleChangeDarkMode = () => {
-        setDarkModeEnable(!darkModeEnabled)
-    };
 
     return (
         <ThemeProvider theme={theme}>
@@ -62,13 +45,6 @@ function App() {
                     </Switch>
                 </div>
             </Router>
-            <div id="handleChangeDarkModeDiv">
-                <Tooltip title="Toggle Dark Mode On/Off">
-                    <Fab aria-label="add" style={fabStyle} onClick={handleChangeDarkMode}>
-                        <Brightness4Icon/>
-                    </Fab>
-                </Tooltip>
-            </div>
         </ThemeProvider>
     );
 }

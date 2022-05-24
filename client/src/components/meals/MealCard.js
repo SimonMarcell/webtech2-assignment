@@ -11,7 +11,6 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
-import EuroIcon from '@material-ui/icons/Euro';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from "@material-ui/icons/Delete";
 import List from "@material-ui/core/List";
@@ -21,7 +20,6 @@ import Avatar from "@material-ui/core/Avatar";
 import RestaurantIcon from "@material-ui/icons/Restaurant";
 import ListItemText from "@material-ui/core/ListItemText";
 import {blue} from "@material-ui/core/colors";
-import HeightIcon from '@material-ui/icons/Height';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,7 +108,7 @@ export default function MealCard(props) {
                     <FastfoodIcon className={classes.smartMealIcon}/>
                 </div>
                 <Typography gutterBottom variant="h5" component="h2" noWrap={wrapEnabled}>
-                    {meal.manufacturer} {meal.model}
+                    {meal.name}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
@@ -142,11 +140,10 @@ export default function MealCard(props) {
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography className={classes.expandText}>
-                        <EuroIcon/> {meal.price}
-                    </Typography>
-                    <Typography className={classes.expandText} style={{marginTop: 10}}>
-                        <HeightIcon className={classes.displaySizeIcon}/> {meal.displaySize}" {meal.displayType}
+                    <Typography className={classes.expandText} style={{justifyContent: 'center'}}>
+                        {meal.type}
+                        <br/>
+                        {meal.calories} kcal
                     </Typography>
                     <div>
                         {restaurantsAvailableIn !== undefined && restaurantsAvailableIn.length > 0 &&

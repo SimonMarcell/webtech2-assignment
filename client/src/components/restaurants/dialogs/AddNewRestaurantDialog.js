@@ -8,31 +8,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import MenuItem from "@material-ui/core/MenuItem";
 import PropTypes from "prop-types";
-
-const ratings = [
-    {
-        value: 1,
-        label: 1,
-    },
-    {
-        value: 2,
-        label: 2,
-    },
-    {
-        value: 3,
-        label: 3,
-    },
-    {
-        value: 4,
-        label: 4,
-    },
-    {
-        value: 5,
-        label: 5,
-    },
-];
 
 export default function AddNewRestaurantDialog(props) {
     const {onClose, open} = props;
@@ -42,7 +18,6 @@ export default function AddNewRestaurantDialog(props) {
     const [country, setCountry] = React.useState();
     const [town, setTown] = React.useState();
     const [address, setAddress] = React.useState();
-    const [rating, setRating] = React.useState(3);
 
     const handleClose = () => {
         resetRestaurantValues();
@@ -59,7 +34,6 @@ export default function AddNewRestaurantDialog(props) {
                     town: town,
                     address: address
                 },
-                rating: rating,
                 availableMeals: []
             }
         };
@@ -73,7 +47,6 @@ export default function AddNewRestaurantDialog(props) {
         setCountry(undefined);
         setTown(undefined);
         setAddress(undefined);
-        setRating(3);
     }
 
     const onNameChange = (event) => {
@@ -94,10 +67,6 @@ export default function AddNewRestaurantDialog(props) {
 
     const onAddressChange = (event) => {
         setAddress(event.target.value);
-    };
-
-    const onRatingChange = (event) => {
-        setRating(event.target.value);
     };
 
     return (
@@ -168,24 +137,6 @@ export default function AddNewRestaurantDialog(props) {
                                        variant="outlined"
                                        fullWidth
                             />
-                        </ListItem>
-                        <ListItem>
-                            <TextField
-                                required
-                                select
-                                label="Rating"
-                                value={rating}
-                                onChange={onRatingChange}
-                                helperText="Select the restaurant's rating"
-                                variant="outlined"
-                                fullWidth
-                            >
-                                {ratings.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
                         </ListItem>
                     </List>
                 </DialogContent>

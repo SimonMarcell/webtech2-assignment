@@ -36,7 +36,10 @@ router.post('/addRestaurant', (req, res) => {
     requestService.addRestaurant(req.body['restaurant'], (success, restaurant) => {
         switch (success) {
             case 1:
-                res.status(200).json({msg: `Restaurant successfully added with id: ${restaurant._id}`, restaurant: restaurant});
+                res.status(200).json({
+                    msg: `Restaurant successfully added with id: ${restaurant._id}`,
+                    restaurant: restaurant
+                });
                 break;
             case -1:
                 res.status(202).json({msg: `Restaurant is already present in the database`});
@@ -76,10 +79,6 @@ function checkRestaurantParams(req, res) {
         res.status(400).json({msg: "Restaurant location address must be defined"});
         return false;
     }
-    if (req.body['restaurant']['rating'] === undefined || req.body['restaurant']['rating'] === "") {
-        res.status(400).json({msg: "Restaurant rating must be defined"});
-        return false;
-    }
     return true;
 }
 
@@ -88,7 +87,13 @@ router.post('/addMeal', (req, res) => {
         return;
     }
 
-    requestService.addMeal(req.body['meal'], (success, meal) => {
+    let meal = {
+        "name": req.body['meal']['name'],
+        "type": req.body['meal']['type'],
+        "calories": req.body['meal']['calories']
+    }
+
+    requestService.addMeal(meal, (success, meal) => {
         switch (success) {
             case 1:
                 res.status(200).json({msg: `Meal successfully added with id: ${meal._id}`, meal: meal});
@@ -126,24 +131,16 @@ function checkMealParams(req, res) {
         res.status(400).json({msg: `A meal must be defined`});
         return false;
     }
-    if (req.body['meal']['manufacturer'] === undefined || req.body['meal']['manufacturer'] === "") {
-        res.status(400).json({msg: "Meal manufacturer must be defined"});
+    if (req.body['meal']['name'] === undefined || req.body['meal']['name'] === "") {
+        res.status(400).json({msg: "Meal name must be defined"});
         return false;
     }
-    if (req.body['meal']['model'] === undefined || req.body['meal']['model'] === "") {
-        res.status(400).json({msg: "Meal manufacturer must be defined"});
+    if (req.body['meal']['type'] === undefined || req.body['meal']['type'] === "") {
+        res.status(400).json({msg: "Meal type must be defined"});
         return false;
     }
-    if (req.body['meal']['price'] === undefined || req.body['meal']['price'] === "") {
-        res.status(400).json({msg: "Meal manufacturer must be defined"});
-        return false;
-    }
-    if (req.body['meal']['displayType'] === undefined || req.body['meal']['displayType'] === "") {
-        res.status(400).json({msg: "Meal manufacturer must be defined"});
-        return false;
-    }
-    if (req.body['meal']['displaySize'] === undefined || req.body['meal']['displaySize'] === "") {
-        res.status(400).json({msg: "Meal manufacturer must be defined"});
+    if (req.body['meal']['calories'] === undefined || req.body['meal']['calories'] === "") {
+        res.status(400).json({msg: "Meal calories must be defined"});
         return false;
     }
     return true;
