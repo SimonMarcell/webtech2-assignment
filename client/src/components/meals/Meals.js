@@ -267,8 +267,6 @@ class Meals extends Component {
         }
     };
 
-    // BEGIN: ADD PHONE
-
     handleOnAddMealFabClick = () => {
         this.setState({
             addNewMealDialogOpen: true

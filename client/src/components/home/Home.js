@@ -4,29 +4,6 @@ import Grid from "@material-ui/core/Grid";
 import SignIn from "./SignIn";
 import ResultSnackBar from "../shared/ResultSnackBar";
 
-// export const authenticate = async () => {
-//     if (getRefreshToken()) {
-//         try {
-//             const tokens = await refreshTokens() // call an API, returns tokens
-//
-//             const expires = (tokens.expires_in || 60 * 60) * 1000
-//             const inOneHour = new Date(new Date().getTime() + expires)
-//
-//             // you will have the exact same setters in your Login page/app too
-//             Cookies.set('access_token', tokens.access_token, { expires: inOneHour })
-//             Cookies.set('refresh_token', tokens.refresh_token)
-//
-//             return true
-//         } catch (error) {
-//             redirectToLogin()
-//             return false
-//         }
-//     }
-//
-//     redirectToLogin()
-//     return false
-// }
-
 class Home extends Component {
 
     state = {
