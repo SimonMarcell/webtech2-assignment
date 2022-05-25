@@ -4,6 +4,7 @@ const path = require('path');
 const logger = require('./middleware/logger');
 const requestController = require('./routes/requestController');
 const cors = require('cors');
+const model = require('./model')
 
 const port = process.env.PORT || 8080;
 
@@ -29,3 +30,5 @@ app.get('*', function (request, response) {
 app.listen(port, () => {
     console.log("Server listening on " + port + ".")
 });
+
+model.loadExampleData()

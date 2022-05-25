@@ -2,9 +2,10 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId;
 
 const url = 'mongodb://localhost:27017';
-const databaseName = 'mealdatabase';
+const databaseName = 'database';
 const mealsCollectionName = 'meals';
 const restaurantsCollectionName = 'restaurants';
+const usersCollectionName = 'users';
 
 const connection = MongoClient.connect(url);
 
@@ -34,6 +35,17 @@ function listRestaurants(findParams, callback) {
     readRequests(query, (result) => {
         callback(result);
     }, restaurantsCollectionName);
+}
+
+function createUser(request, callback) {
+    const userToCheckBeforeAdding = {
+        username: request.username
+    };
+
+    checkObjectBeforeAdding(userToCheckBeforeAdding, request, usersCollectionName, (result) => {
+            callback(result);
+        }
+    );
 }
 
 function addMeal(request, callback) {
@@ -180,6 +192,7 @@ function listRestaurantsContainingMeal(mealId, callback) {
 }
 
 module.exports = {
+    "createUser": createUser,
     "addRestaurant": addRestaurant,
     "addMeal": addMeal,
     "listMeals": listMeals,

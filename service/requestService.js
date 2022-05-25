@@ -6,6 +6,12 @@ function RequestService(requestDAO) {
     }
 }
 
+RequestService.prototype.createUser = function (request, callback) {
+    this.requestDAO.createUser(request, (success) => {
+        callback(success);
+    });
+};
+
 RequestService.prototype.addMeal = function (request, callback) {
     this.requestDAO.addMeal(request, (success, meal) => {
         callback(success, meal);

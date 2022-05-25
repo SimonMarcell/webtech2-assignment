@@ -9,7 +9,7 @@ const OAuth2Server = require('oauth2-server'),
 let Service = require('../service/requestService');
 const requestService = new Service();
 
-const mongoUri = 'mongodb://localhost:27017/oauth';
+const mongoUri = 'mongodb://localhost:27017/database';
 
 mongoose.connect(mongoUri, {
     useNewUrlParser: true
@@ -21,12 +21,6 @@ mongoose.connect(mongoUri, {
     console.log('Connected successfully to "%s"', mongoUri);
 });
 
-
-router.oauth = new OAuth2Server({
-    model: require('../model.js'),
-    accessTokenLifetime: 60 * 60,
-    allowBearerTokensInQueryString: true
-});
 
 router.all('/oauth/token', obtainToken);
 
@@ -65,6 +59,34 @@ function authenticateRequest(req, res, next) {
             res.status(err.code || 500).json(err);
         });
 }
+
+
+router.post('/createUser', (req, res) => {
+    if (req.body['username']=== undefined || req.body['username'] === "") {
+        res.status(400).json({msg: 'Username can not be empty'})
+    }
+    if (req.body['password']=== undefined || req.body['password'] === "") {
+        res.status(400).json({msg: 'Password can not be empty'})
+    }
+
+    let user = {
+        "username": req.body['username'],
+        "password": req.body['password']
+    }
+
+    requestService.createUser(user, (success) => {
+        switch (success) {
+            case 1:
+                res.status(200).json({msg: `User successfully created!`});
+                break;
+            case -1:
+                res.status(400).json({msg: `User is already present in the database`});
+                break;
+            default:
+                res.status(500).json({msg: `Internal server error`});
+        }
+    });
+})
 
 
 router.get('/listMeals', (req, res) => {
