@@ -1,20 +1,18 @@
-var mongoose = require('mongoose');
+require('mongoose');
 
 /**
  * Configuration.
  */
-
-var clientModel = require('./mongo/model/client'),
+const clientModel = require('./mongo/model/client'),
     tokenModel = require('./mongo/model/token'),
     userModel = require('./mongo/model/user');
 
 /**
  * Add example client and user to the database (for debug).
  */
+const loadExampleData = function () {
 
-var loadExampleData = function() {
-
-    var client1 = new clientModel({
+    const client1 = new clientModel({
         id: 'application',	// TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
         clientId: 'application',
         clientSecret: 'secret',
@@ -25,7 +23,7 @@ var loadExampleData = function() {
         redirectUris: []
     });
 
-    var client2 = new clientModel({
+    const client2 = new clientModel({
         clientId: 'confidentialApplication',
         clientSecret: 'topSecret',
         grants: [
@@ -35,12 +33,12 @@ var loadExampleData = function() {
         redirectUris: []
     });
 
-    var user = new userModel({
+    const user = new userModel({
         username: 'pedroetb',
         password: 'password'
     });
 
-    client1.save(function(err, client) {
+    client1.save(function (err, client) {
 
         if (err) {
             return console.error(err);
@@ -48,7 +46,7 @@ var loadExampleData = function() {
         console.log('Created client', client);
     });
 
-    user.save(function(err, user) {
+    user.save(function (err, user) {
 
         if (err) {
             return console.error(err);
@@ -56,7 +54,7 @@ var loadExampleData = function() {
         console.log('Created user', user);
     });
 
-    client2.save(function(err, client) {
+    client2.save(function (err, client) {
 
         if (err) {
             return console.error(err);
@@ -68,10 +66,9 @@ var loadExampleData = function() {
 /**
  * Dump the database content (for debug).
  */
+const dump = function () {
 
-var dump = function() {
-
-    clientModel.find(function(err, clients) {
+    clientModel.find(function (err, clients) {
 
         if (err) {
             return console.error(err);
@@ -79,7 +76,7 @@ var dump = function() {
         console.log('clients', clients);
     });
 
-    tokenModel.find(function(err, tokens) {
+    tokenModel.find(function (err, tokens) {
 
         if (err) {
             return console.error(err);
@@ -87,7 +84,7 @@ var dump = function() {
         console.log('tokens', tokens);
     });
 
-    userModel.find(function(err, users) {
+    userModel.find(function (err, users) {
 
         if (err) {
             return console.error(err);
@@ -100,11 +97,11 @@ var dump = function() {
  * Methods used by all grant types.
  */
 
-var getAccessToken = function(token, callback) {
+const getAccessToken = function (token, callback) {
 
     tokenModel.findOne({
         accessToken: token
-    }).lean().exec((function(callback, err, token) {
+    }).lean().exec((function (callback, err, token) {
 
         if (!token) {
             console.error('Token not found');
@@ -114,12 +111,12 @@ var getAccessToken = function(token, callback) {
     }).bind(null, callback));
 };
 
-var getClient = function(clientId, clientSecret, callback) {
+const getClient = function (clientId, clientSecret, callback) {
 
     clientModel.findOne({
         clientId: clientId,
         clientSecret: clientSecret
-    }).lean().exec((function(callback, err, client) {
+    }).lean().exec((function (callback, err, client) {
 
         if (!client) {
             console.error('Client not found');
@@ -129,7 +126,7 @@ var getClient = function(clientId, clientSecret, callback) {
     }).bind(null, callback));
 };
 
-var saveToken = function(token, client, user, callback) {
+const saveToken = function (token, client, user, callback) {
 
     token.client = {
         id: client.clientId
@@ -139,8 +136,8 @@ var saveToken = function(token, client, user, callback) {
         username: user.username
     };
 
-    var tokenInstance = new tokenModel(token);
-    tokenInstance.save((function(callback, err, token) {
+    const tokenInstance = new tokenModel(token);
+    tokenInstance.save((function (callback, err, token) {
 
         if (!token) {
             console.error('Token not saved');
@@ -158,12 +155,12 @@ var saveToken = function(token, client, user, callback) {
  * Method used only by password grant type.
  */
 
-var getUser = function(username, password, callback) {
+const getUser = function (username, password, callback) {
 
     userModel.findOne({
         username: username,
         password: password
-    }).lean().exec((function(callback, err, user) {
+    }).lean().exec((function (callback, err, user) {
 
         if (!user) {
             console.error('User not found');
@@ -177,13 +174,13 @@ var getUser = function(username, password, callback) {
  * Method used only by client_credentials grant type.
  */
 
-var getUserFromClient = function(client, callback) {
+const getUserFromClient = function (client, callback) {
 
     clientModel.findOne({
         clientId: client.clientId,
         clientSecret: client.clientSecret,
         grants: 'client_credentials'
-    }).lean().exec((function(callback, err, client) {
+    }).lean().exec((function (callback, err, client) {
 
         if (!client) {
             console.error('Client not found');
@@ -199,11 +196,11 @@ var getUserFromClient = function(client, callback) {
  * Methods used only by refresh_token grant type.
  */
 
-var getRefreshToken = function(refreshToken, callback) {
+const getRefreshToken = function (refreshToken, callback) {
 
     tokenModel.findOne({
         refreshToken: refreshToken
-    }).lean().exec((function(callback, err, token) {
+    }).lean().exec((function (callback, err, token) {
 
         if (!token) {
             console.error('Token not found');
@@ -213,13 +210,13 @@ var getRefreshToken = function(refreshToken, callback) {
     }).bind(null, callback));
 };
 
-var revokeToken = function(token, callback) {
+const revokeToken = function (token, callback) {
 
     tokenModel.deleteOne({
         refreshToken: token.refreshToken
-    }).exec((function(callback, err, results) {
+    }).exec((function (callback, err, results) {
 
-        var deleteSuccess = results && results.deletedCount === 1;
+        const deleteSuccess = results && results.deletedCount === 1;
 
         if (!deleteSuccess) {
             console.error('Token not deleted');

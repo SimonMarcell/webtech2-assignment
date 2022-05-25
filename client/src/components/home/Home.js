@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Cookies from 'js-cookie'
 import SignIn from "./SignIn";
 import ResultSnackBar from "../shared/ResultSnackBar";
 
