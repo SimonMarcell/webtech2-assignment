@@ -10,6 +10,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
+import qs from 'qs';
+
 
 export default function SignIn(props) {
 
@@ -27,7 +29,30 @@ export default function SignIn(props) {
 
 
     function handleSignIn(username, password) {
-
+        const options = {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            data: qs.stringify({
+                username: username,
+                password: password,
+                grant_type: "password"
+            }),
+            url: 'http://localhost:8080/oauth/token',
+            auth: {
+                username: 'application',
+                password: 'secret'
+            }
+        };
+        axios(
+            options
+        ).then(res => {
+            if (res.status === 200) {
+                console.log(res.data)
+                onSubmit(res.data.msg, 'success')
+            }
+        }).catch(err => {
+            onSubmit(err.response.data.msg, 'error')
+        })
     }
 
     function handleRegister(username, password) {
