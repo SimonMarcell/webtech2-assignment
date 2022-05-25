@@ -56,7 +56,7 @@ export default function SignIn(props) {
             options
         ).then(res => {
             if (res.status === 200) {
-                onSubmit(res.data.msg, 'success')
+                onSubmit("You have successfully logged in, credentials will expire in 1 hour", 'success')
                 setCookies(res.data)
             }
         }).catch(err => {
