@@ -1,62 +1,78 @@
-import React from 'react';
+import React, {Component} from 'react';
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import {makeStyles} from "@material-ui/core/styles";
-import CardContent from "@material-ui/core/CardContent";
-import FastfoodIcon from "@material-ui/icons/Fastfood";
-import Card from "@material-ui/core/Card";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import CheckIcon from '@material-ui/icons/Check';
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import List from "@material-ui/core/List";
-import green from "@material-ui/core/colors/green";
+import Cookies from 'js-cookie'
 import SignIn from "./SignIn";
+import ResultSnackBar from "../shared/ResultSnackBar";
 
-const useStyles = makeStyles({
-    gridTitle: {
-        textAlign: "center",
-        marginTop: '20px',
-        marginLeft: '50px',
-        marginRight: '50px'
-    },
-    gridItem: {
-        margin: '20px'
-    },
-    content: {
-        height: 140,
-    },
-    card: {
-        padding: 2,
-        textAlign: 'center',
-        width: "45vh"
-    },
-    cardIcon: {
-        marginTop: '40px',
-        width: '70px',
-        height: '70px'
-    },
-    tick: {
-        backgroundColor: green[100],
-        color: green[600],
-    },
-});
+// export const authenticate = async () => {
+//     if (getRefreshToken()) {
+//         try {
+//             const tokens = await refreshTokens() // call an API, returns tokens
+//
+//             const expires = (tokens.expires_in || 60 * 60) * 1000
+//             const inOneHour = new Date(new Date().getTime() + expires)
+//
+//             // you will have the exact same setters in your Login page/app too
+//             Cookies.set('access_token', tokens.access_token, { expires: inOneHour })
+//             Cookies.set('refresh_token', tokens.refresh_token)
+//
+//             return true
+//         } catch (error) {
+//             redirectToLogin()
+//             return false
+//         }
+//     }
+//
+//     redirectToLogin()
+//     return false
+// }
 
-export default function Home() {
-    const classes = useStyles();
+class Home extends Component {
 
-    return (
-        <div id="home-root" style={{paddingTop: 50}}>
-            <SignIn/>
-            <Grid container direction="column" alignItems="center" justify="center">
-                <Grid item>
-                    <Typography gutterBottom variant="h6" className={classes.gridTitle}>
-                        Made by: Marcell Simon (K9IVJV)
-                    </Typography>
+    state = {
+        snackBarOpen: false,
+        snackBarMessage: '',
+        snackBarMessageSeverity: 'success',
+    }
+
+    handleOnSubmit = (message, severity) => {
+        this.setState({
+            snackBarOpen: true,
+            snackBarMessage: message,
+            snackBarMessageSeverity: severity
+        });
+    }
+
+    handleCloseSnackBar = () => {
+        this.setState({
+            snackBarOpen: false
+        });
+    };
+
+    render() {
+        return (
+            <div id="home-root" style={{paddingTop: 50}}>
+                <SignIn onSubmit={this.handleOnSubmit}/>
+                <Grid container direction="column" alignItems="center" justifyContent="center">
+                    <Grid item>
+                        <Typography gutterBottom variant="h6" style={{
+                            textAlign: "center",
+                            marginTop: '20px',
+                            marginLeft: '50px',
+                            marginRight: '50px'
+                        }}>
+                            Made by: Marcell Simon (K9IVJV)
+                        </Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </div>
-    );
+                <div id="snackBarDiv">
+                    <ResultSnackBar message={this.state.snackBarMessage} open={this.state.snackBarOpen}
+                                    onClose={this.handleCloseSnackBar} severity={this.state.snackBarMessageSeverity}/>
+                </div>
+            </div>
+        );
+    }
 }
+
+export default Home;

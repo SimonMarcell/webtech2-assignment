@@ -291,7 +291,7 @@ class Meals extends Component {
     render() {
         return (
             <div id="meals-root">
-                <Grid container justify="space-evenly" alignItems="center">
+                <Grid container justifyContent="space-evenly" alignItems="center">
                     {this.state.meals.map((meal, key) => (
                             <Grid item key={meal._id} style={{margin: 10}}>
                                 <br/>

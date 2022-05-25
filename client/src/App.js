@@ -4,7 +4,7 @@ import Home from './components/home/Home'
 import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
 import Meals from "./components/meals/Meals";
 import Navigation from "./components/navigation/Navigation";
-import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import {createTheme, ThemeProvider} from '@material-ui/core/styles';
 import {CssBaseline} from "@material-ui/core";
 
 
@@ -12,7 +12,7 @@ function App() {
 
     const theme = React.useMemo(
         () =>
-            createMuiTheme({
+            createTheme({
                 palette: {
                     type: 'dark',
                     primary: {

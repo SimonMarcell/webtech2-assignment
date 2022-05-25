@@ -5,28 +5,49 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import {createTheme, ThemeProvider} from '@material-ui/core/styles';
+import axios from "axios";
 
-// const theme = createTheme();
+export default function SignIn(props) {
 
-export default function SignIn() {
+    const {onSubmit} = props;
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        if ('signin' === event.nativeEvent.submitter.name) {
+            handleSignIn(data.get('username'), data.get('password'))
+        } else if ('register' === event.nativeEvent.submitter.name) {
+            handleRegister(data.get('username'), data.get('password'))
+        }
     };
 
+
+    function handleSignIn(username, password) {
+
+    }
+
+    function handleRegister(username, password) {
+        axios.post(
+            `http://localhost:8080/createUser`,
+            {
+                "username": username,
+                "password": password
+            }
+        ).then(res => {
+            if (res.status === 200) {
+                onSubmit(res.data.msg, 'success')
+            }
+        }).catch(err => {
+            onSubmit(err.response.data.msg, 'error')
+        })
+    }
+
+
     return (
-        // <ThemeProvider theme={theme}>
 
         <Container component="main" maxWidth="xs">
             <CssBaseline/>
@@ -71,6 +92,7 @@ export default function SignIn() {
                     />
                     <Button
                         type="submit"
+                        name="signin"
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
@@ -80,6 +102,7 @@ export default function SignIn() {
                     <Button
                         style={{marginTop: 10}}
                         type="submit"
+                        name="register"
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
@@ -88,10 +111,6 @@ export default function SignIn() {
                     </Button>
                 </Box>
             </Box>
-            {/*<Copyright sx={{ mt: 8, mb: 4 }} />*/}
         </Container>
-
-
-        // </ThemeProvider>
     );
 }
