@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AddNewMealDialog from "./dialogs/AddNewMealDialog";
 import Tooltip from "@material-ui/core/Tooltip";
 import EmptyCollection from "../shared/EmptyCollection";
-import {string} from "prop-types";
+import Cookies from 'js-cookie'
 
 const fabStyle = {
     margin: 0,
@@ -77,26 +77,34 @@ class Meals extends Component {
     handleCloseDeleteMealDialog = (result) => {
         if (result) {
             let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
-            axios.get(`http://localhost:8080/deleteMeal/${mealToInteractWith._id}`)
-                .then(res => {
-                    if (res.status === 200) {
+            axios.delete(`http://localhost:8080/deleteMeal`, {
+                headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
+                data: {"mealId": mealToInteractWith._id}
+            }).then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        meals: [...this.state.meals.filter(
+                            meal => meal._id !== mealToInteractWith._id
+                        )],
+                        snackBarMessage: res.data.msg
+                    });
+                    if (mealToInteractWith.restaurantsMealAvailableIn.length > 0) {
+                        this.deleteMealFromRestaurants(mealToInteractWith._id,
+                            mealToInteractWith.restaurantsMealAvailableIn);
+                    } else {
                         this.setState({
-                            meals: [...this.state.meals.filter(
-                                meal => meal._id !== mealToInteractWith._id
-                            )],
-                            snackBarMessage: res.data.msg
+                            snackBarOpen: true,
+                            snackBarMessageSeverity: 'success'
                         });
-                        if (mealToInteractWith.restaurantsMealAvailableIn.length > 0) {
-                            this.deleteMealFromRestaurants(mealToInteractWith._id,
-                                mealToInteractWith.restaurantsMealAvailableIn);
-                        } else {
-                            this.setState({
-                                snackBarOpen: true,
-                                snackBarMessageSeverity: 'success'
-                            });
-                        }
                     }
+                }
+            }).catch((err) => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                    snackBarMessageSeverity: 'error'
                 });
+            });
         }
         this.setState({
             deleteMealDialogOpen: false
@@ -110,7 +118,8 @@ class Meals extends Component {
     };
 
     removeMealFromRestaurant = (restaurantId, mealId) => {
-        axios.get(`http://localhost:8080/removeMealFromRestaurant/${restaurantId}/${mealId}`)
+        axios.get(`http://localhost:8080/removeMealFromRestaurant/${restaurantId}/${mealId}`,
+            {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
             .then(res => {
                 if (res.status === 200) {
                     let additionalMessage = ` and from restaurant(${restaurantId}) `;
@@ -169,22 +178,32 @@ class Meals extends Component {
 
     addMealToRestaurant = (restaurantId, restaurantName) => {
         let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
-        axios.get(`http://localhost:8080/addMealToRestaurant/${restaurantId}/${mealToInteractWith._id}`)
-            .then(res => {
-                if (res.status === 200) {
-                    this.setState({
-                        snackBarOpen: true,
-                        snackBarMessage: res.data.msg,
-                        snackBarMessageSeverity: 'success'
-                    });
-                    let meals = [...this.state.meals];
-                    let meal = {...meals[this.state.mealIndexToInteractWith]};
+        axios.post(`http://localhost:8080/addMealToRestaurant`,
+            {
+                "mealId": mealToInteractWith._id,
+                "restaurantId": restaurantId
+            }, {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}}
+        ).then(res => {
+            if (res.status === 200) {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: res.data.msg,
+                    snackBarMessageSeverity: 'success'
+                });
+                let meals = [...this.state.meals];
+                let meal = {...meals[this.state.mealIndexToInteractWith]};
 
-                    meal.restaurantsMealAvailableIn.push({_id: restaurantId, name: restaurantName});
+                meal.restaurantsMealAvailableIn.push({_id: restaurantId, name: restaurantName});
 
-                    this.setState({meals: meals});
-                }
+                this.setState({meals: meals});
+            }
+        }).catch((err) => {
+            this.setState({
+                snackBarOpen: true,
+                snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                snackBarMessageSeverity: 'error'
             });
+        });
     };
 
     getRestaurantMealAvailableIn = (restaurants, index) => {
@@ -222,33 +241,29 @@ class Meals extends Component {
 
             axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend,
                 {
-                    headers : {
-                        Authorization: "Bearer cf47ba6d487484598a7de0969e031a0859bc64f2"
-                    }
-                })
-                .then(res => {
-                    if (res.status === 200) {
-                        this.state.meals[this.state.mealIndexToInteractWith] = meal;
-                        this.setState({
-                            snackBarOpen: true,
-                            snackBarMessage: res.data.msg,
-                            snackBarMessageSeverity: 'success'
-                        });
-                    } else if (res.status === 202) {
-                        this.setState({
-                            snackBarOpen: true,
-                            snackBarMessage: res.data.msg,
-                            snackBarMessageSeverity: 'info'
-                        });
-                    }
-                })
-                .catch((err) => {
+                    headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}
+                }).then(res => {
+                if (res.status === 200) {
+                    this.state.meals[this.state.mealIndexToInteractWith] = meal;
                     this.setState({
                         snackBarOpen: true,
-                        snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
-                        snackBarMessageSeverity: 'error'
+                        snackBarMessage: res.data.msg,
+                        snackBarMessageSeverity: 'success'
                     });
+                } else if (res.status === 202) {
+                    this.setState({
+                        snackBarOpen: true,
+                        snackBarMessage: res.data.msg,
+                        snackBarMessageSeverity: 'info'
+                    });
+                }
+            }).catch((err) => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                    snackBarMessageSeverity: 'error'
                 });
+            });
         }
     };
 
@@ -266,7 +281,8 @@ class Meals extends Component {
         });
 
         if (meal !== undefined) {
-            axios.post(`http://localhost:8080/addMeal`, meal)
+            axios.post(`http://localhost:8080/addMeal`, meal,
+                {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
                 .then(res => {
                     if (res.status === 200) {
                         let meals = this.state.meals;
@@ -277,16 +293,17 @@ class Meals extends Component {
                             snackBarMessage: res.data.msg,
                             snackBarMessageSeverity: 'success'
                         });
-                    } else if (res.status === 202) {
-                        this.setState({
-                            snackBarOpen: true,
-                            snackBarMessage: res.data.msg,
-                            snackBarMessageSeverity: 'error'
-                        });
                     }
+                }).catch((err) => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                    snackBarMessageSeverity: 'error'
                 });
+            });
         }
-    };
+    }
+    ;
 
     render() {
         return (
@@ -308,7 +325,8 @@ class Meals extends Component {
                 </Grid>
                 <div id="snackBarDiv">
                     <ResultSnackBar message={this.state.snackBarMessage} open={this.state.snackBarOpen}
-                                    onClose={this.handleCloseSnackBar} severity={this.state.snackBarMessageSeverity}/>
+                                    onClose={this.handleCloseSnackBar}
+                                    severity={this.state.snackBarMessageSeverity}/>
                 </div>
                 <div id="addMealDialogDiv">
                     <AddMealToRestaurantDialog onClose={this.handleCloseAddMealDialog}

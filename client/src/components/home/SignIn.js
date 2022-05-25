@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
 import qs from 'qs';
+import Cookies from 'js-cookie'
 
 
 export default function SignIn(props) {
@@ -26,6 +27,14 @@ export default function SignIn(props) {
             handleRegister(data.get('username'), data.get('password'))
         }
     };
+
+    function setCookies(tokens) {
+        const expires = (tokens.expires_in || 60 * 60) * 1000
+        const inOneHour = new Date(new Date().getTime() + expires)
+
+        Cookies.set('accessToken', tokens.accessToken, { expires: inOneHour })
+        Cookies.set('refreshToken', tokens.refreshToken)
+    }
 
 
     function handleSignIn(username, password) {
@@ -47,8 +56,8 @@ export default function SignIn(props) {
             options
         ).then(res => {
             if (res.status === 200) {
-                console.log(res.data)
                 onSubmit(res.data.msg, 'success')
+                setCookies(res.data)
             }
         }).catch(err => {
             onSubmit(err.response.data.msg, 'error')

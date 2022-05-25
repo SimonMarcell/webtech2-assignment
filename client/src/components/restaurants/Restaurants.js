@@ -10,6 +10,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import EmptyCollection from "../shared/EmptyCollection";
+import Cookies from "js-cookie";
 
 const fabStyle = {
     margin: 0,
@@ -79,26 +80,32 @@ class Restaurants extends Component {
     };
 
     handleRemoveMealButtonClick = (mealId, index) => {
-        axios.get(`http://localhost:8080/removeMealFromRestaurant/` +
-            `${this.state.restaurants[this.state.restaurantIndexToInteractWith]._id}/${mealId}`)
-            .then(res => {
-                if (res.status === 200) {
-                    this.state.restaurants[this.state.restaurantIndexToInteractWith].availableMeals.splice(index, 1);
-                    this.state.mealsFromRestaurant.splice(index, 1);
-
-                    this.setState({
-                        snackBarMessage: res.data.msg,
-                        snackBarOpen: true,
-                        snackBarMessageSeverity: 'success'
-                    });
-                } else {
-                    this.setState({
-                        snackBarMessage: res.data.msg,
-                        snackBarOpen: true,
-                        snackBarMessageSeverity: 'error'
-                    })
+        axios.delete(`http://localhost:8080/removeMealFromRestaurant`,
+            {
+                headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
+                data: {
+                    "restaurantId": this.state.restaurants[this.state.restaurantIndexToInteractWith]._id,
+                    "mealId": mealId
                 }
+            }).then(res => {
+            if (res.status === 200) {
+                this.state.restaurants[this.state.restaurantIndexToInteractWith].availableMeals.splice(index, 1);
+                this.state.mealsFromRestaurant.splice(index, 1);
+
+                this.setState({
+                    snackBarMessage: res.data.msg,
+                    snackBarOpen: true,
+                    snackBarMessageSeverity: 'success'
+                });
+            }
+        }).catch((err) => {
+            this.setState({
+                snackBarOpen: true,
+                snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                snackBarMessageSeverity: 'error'
             });
+        });
+
     };
 
     handleCloseSnackBar = () => {
@@ -106,8 +113,6 @@ class Restaurants extends Component {
             snackBarOpen: false
         });
     };
-
-    // BEGIN: DELETE STORE
 
     handleDeleteRestaurantButtonClick = (index) => {
         this.setState({
@@ -119,28 +124,33 @@ class Restaurants extends Component {
     handleCloseDeleteRestaurantDialog = (result) => {
         if (result) {
             let restaurantToInteractWith = this.state.restaurants[this.state.restaurantIndexToInteractWith];
-            axios.get(`http://localhost:8080/deleteRestaurant/${restaurantToInteractWith._id}`)
-                .then(res => {
-                    if (res.status === 200) {
-                        this.setState({
-                            restaurants: [...this.state.restaurants.filter(
-                                restaurant => restaurant._id !== restaurantToInteractWith._id
-                            )],
-                            snackBarMessage: res.data.msg,
-                            snackBarOpen: true,
-                            snackBarMessageSeverity: 'success'
-                        });
-                    }
+            axios.delete(`http://localhost:8080/deleteRestaurant`,
+                {
+                    headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
+                    data: {"restaurantId": restaurantToInteractWith._id}
+                }).then(res => {
+                if (res.status === 200) {
+                    this.setState({
+                        restaurants: [...this.state.restaurants.filter(
+                            restaurant => restaurant._id !== restaurantToInteractWith._id
+                        )],
+                        snackBarMessage: res.data.msg,
+                        snackBarOpen: true,
+                        snackBarMessageSeverity: 'success'
+                    });
+                }
+            }).catch((err) => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                    snackBarMessageSeverity: 'error'
                 });
+            });
         }
         this.setState({
             deleteRestaurantDialogOpen: false
         });
     }
-
-    // END: DELETE STORE
-
-    // BEGIN: ADD NEW STORE
 
     handleOnAddNewRestaurantFabClick = () => {
         this.setState({
@@ -154,7 +164,8 @@ class Restaurants extends Component {
         });
 
         if (restaurant !== undefined) {
-            axios.post(`http://localhost:8080/addRestaurant`, restaurant)
+            axios.post(`http://localhost:8080/addRestaurant`, restaurant,
+                {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
                 .then(res => {
                     if (res.status === 200) {
                         let restaurants = this.state.restaurants;
@@ -172,11 +183,15 @@ class Restaurants extends Component {
                             snackBarMessageSeverity: 'error'
                         });
                     }
+                }).catch((err) => {
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                    snackBarMessageSeverity: 'error'
                 });
+            });
         }
     }
-
-    // END: ADD NEW STORE
 
     render() {
         return (
@@ -186,9 +201,9 @@ class Restaurants extends Component {
                             <Grid item key={restaurant._id} style={{margin: 10}}>
                                 <br/>
                                 <RestaurantCard restaurant={restaurant} index={key}
-                                           handleListMealsFromRestaurantButtonClick={this.handleListMealsFromRestaurantButtonClick}
-                                           fetchMealsFromRestaurant={this.fetchMealsFromRestaurant}
-                                           handleDeleteRestaurantButtonClick={this.handleDeleteRestaurantButtonClick}
+                                                handleListMealsFromRestaurantButtonClick={this.handleListMealsFromRestaurantButtonClick}
+                                                fetchMealsFromRestaurant={this.fetchMealsFromRestaurant}
+                                                handleDeleteRestaurantButtonClick={this.handleDeleteRestaurantButtonClick}
                                 />
                             </Grid>
                         )
@@ -200,19 +215,19 @@ class Restaurants extends Component {
                 </div>
                 <div id="listMealsFromRestaurantDialogDiv">
                     <ListMealsFromRestaurantDialog onClose={this.handleCloseListMealsFromRestaurantDialog}
-                                               open={this.state.listMealsFromRestaurantDialogOpen}
-                                               meals={this.state.mealsFromRestaurant}
-                                               restaurant={this.state.restaurants[this.state.restaurantIndexToInteractWith]}
-                                               handleRemoveMealButtonClick={this.handleRemoveMealButtonClick}
+                                                   open={this.state.listMealsFromRestaurantDialogOpen}
+                                                   meals={this.state.mealsFromRestaurant}
+                                                   restaurant={this.state.restaurants[this.state.restaurantIndexToInteractWith]}
+                                                   handleRemoveMealButtonClick={this.handleRemoveMealButtonClick}
                     />
                 </div>
                 <div id="deleteRestaurantAlertDialogDiv">
                     <DeleteRestaurantAlertDialog onClose={this.handleCloseDeleteRestaurantDialog}
-                                            open={this.state.deleteRestaurantDialogOpen}/>
+                                                 open={this.state.deleteRestaurantDialogOpen}/>
                 </div>
                 <div id="addNewRestaurantDialogDiv">
                     <AddNewRestaurantDialog onClose={this.handleCloseAddNewRestaurantDialog}
-                                       open={this.state.addNewRestaurantDialogOpen}/>
+                                            open={this.state.addNewRestaurantDialogOpen}/>
                 </div>
                 <div id="addNewRestaurantFabDiv">
                     <Tooltip title="Add New Restaurant">

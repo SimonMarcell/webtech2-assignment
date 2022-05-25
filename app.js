@@ -31,4 +31,5 @@ app.listen(port, () => {
     console.log("Server listening on " + port + ".")
 });
 
+// TODO: do not update db every time, check for existing secrets
 model.loadExampleData()

@@ -51,21 +51,19 @@ function authenticateRequest(req, res, next) {
     let response = new Response(res);
 
     return router.oauth.authenticate(request, response)
-        .then(function (token) {
-
+        .then(function () {
             next();
         }).catch(function (err) {
-
             res.status(err.code || 500).json(err);
         });
 }
 
 
 router.post('/createUser', (req, res) => {
-    if (req.body['username']=== undefined || req.body['username'] === "") {
+    if (req.body['username'] === undefined || req.body['username'] === "") {
         res.status(400).json({msg: 'Username can not be empty'})
     }
-    if (req.body['password']=== undefined || req.body['password'] === "") {
+    if (req.body['password'] === undefined || req.body['password'] === "") {
         res.status(400).json({msg: 'Password can not be empty'})
     }
 
@@ -114,25 +112,27 @@ router.get('/listRestaurants', (req, res) => {
 });
 
 router.post('/addRestaurant', (req, res) => {
-    if (!checkRestaurantParams(req, res)) {
-        return;
-    }
-
-    requestService.addRestaurant(req.body['restaurant'], (success, restaurant) => {
-        switch (success) {
-            case 1:
-                res.status(200).json({
-                    msg: `Restaurant successfully added with id: ${restaurant._id}`,
-                    restaurant: restaurant
-                });
-                break;
-            case -1:
-                res.status(202).json({msg: `Restaurant is already present in the database`});
-                break;
-            default:
-                res.status(500).json({msg: `Internal server error`});
+    authenticateRequest(req, res, () => {
+        if (!checkRestaurantParams(req, res)) {
+            return;
         }
-    });
+
+        requestService.addRestaurant(req.body['restaurant'], (success, restaurant) => {
+            switch (success) {
+                case 1:
+                    res.status(200).json({
+                        msg: `Restaurant successfully added with id: ${restaurant._id}`,
+                        restaurant: restaurant
+                    });
+                    break;
+                case -1:
+                    res.status(202).json({msg: `Restaurant is already present in the database`});
+                    break;
+                default:
+                    res.status(500).json({msg: `Internal server error`});
+            }
+        });
+    })
 });
 
 function checkRestaurantParams(req, res) {
@@ -168,64 +168,57 @@ function checkRestaurantParams(req, res) {
 }
 
 router.post('/addMeal', (req, res) => {
-    if (!checkMealParams(req, res)) {
-        return;
-    }
-
-    let meal = {
-        "name": req.body['meal']['name'],
-        "type": req.body['meal']['type'],
-        "calories": req.body['meal']['calories']
-    }
-
-    requestService.addMeal(meal, (success, meal) => {
-        switch (success) {
-            case 1:
-                res.status(200).json({msg: `Meal successfully added with id: ${meal._id}`, meal: meal});
-                break;
-            case -1:
-                res.status(202).json({msg: `Meal is already present in the database`});
-                break;
-            default:
-                res.status(500).json({msg: `Internal server error`});
+    authenticateRequest(req, res, () => {
+        if (!checkMealParams(req, res)) {
+            return;
         }
-    });
+
+        let meal = {
+            "name": req.body['meal']['name'],
+            "type": req.body['meal']['type'],
+            "calories": req.body['meal']['calories']
+        }
+
+        requestService.addMeal(meal, (success, meal) => {
+            switch (success) {
+                case 1:
+                    res.status(200).json({msg: `Meal successfully added with id: ${meal._id}`, meal: meal});
+                    break;
+                case -1:
+                    res.status(202).json({msg: `Meal is already present in the database`});
+                    break;
+                default:
+                    res.status(500).json({msg: `Internal server error`});
+            }
+        });
+    })
 });
 
 router.put('/updateMeal/:id', (req, res) => {
+    authenticateRequest(req, res, () => {
+        if (!checkMealParams(req, res)) {
+            return;
+        }
 
-    let request = new Request(req);
-    let response = new Response(res);
+        let meal = {
+            "name": req.body['meal']['name'],
+            "type": req.body['meal']['type'],
+            "calories": req.body['meal']['calories']
+        }
 
-    return router.oauth.authenticate(request, response)
-        .then(function (token) {
-            if (!checkMealParams(req, res)) {
-                return;
+        requestService.updateMeal(req.params.id, meal, (result) => {
+            switch (result) {
+                case 0:
+                    res.status(200).json({msg: `Meal updated with id: ${req.params.id}`});
+                    break;
+                case 1:
+                    res.status(202).json({msg: `Meal with id: ${req.params.id} already has the requested parameters`});
+                    break;
+                case -1:
+                    res.status(400).json({msg: `Bad request`});
             }
-
-            let meal = {
-                "name": req.body['meal']['name'],
-                "type": req.body['meal']['type'],
-                "calories": req.body['meal']['calories']
-            }
-
-            requestService.updateMeal(req.params.id, meal, (result) => {
-                switch (result) {
-                    case 0:
-                        res.status(200).json({msg: `Meal updated with id: ${req.params.id}`});
-                        break;
-                    case 1:
-                        res.status(202).json({msg: `Meal with id: ${req.params.id} already has the requested parameters`});
-                        break;
-                    case -1:
-                        res.status(400).json({msg: `Bad request`});
-                }
-            });
-            // next();
-        }).catch(function (err) {
-
-            res.status(err.code || 500).json(err);
         });
+    })
 });
 
 function checkMealParams(req, res) {
@@ -248,53 +241,61 @@ function checkMealParams(req, res) {
     return true;
 }
 
-router.get('/deleteMeal/:id', (req, res) => {
-    requestService.deleteMeal(req.params.id, (success) => {
-        switch (success) {
-            case 1:
-                res.status(200).json({msg: `Meal deleted with id: ${req.params.id}`});
-                break;
-            case 0:
+router.delete('/deleteMeal', (req, res) => {
+    authenticateRequest(req, res, () => {
+        requestService.deleteMeal(req.body['mealId'], (success) => {
+            switch (success) {
+                case 1:
+                    res.status(200).json({msg: `Meal deleted with id: ${req.body['mealId']}`});
+                    break;
+                case 0:
+                    res.status(400).json({msg: `Bad request`});
+            }
+        });
+    })
+});
+
+router.delete('/deleteRestaurant', (req, res) => {
+    authenticateRequest(req, res, () => {
+        requestService.deleteRestaurant(req.body['restaurantId'], (success) => {
+            switch (success) {
+                case 1:
+                    res.status(200).json({msg: `Restaurant deleted with id: ${req.body['restaurantId']}`});
+                    break;
+                case 0:
+                    res.status(400).json({msg: `Bad request`});
+            }
+        });
+    })
+});
+
+router.post('/addMealToRestaurant', (req, res) => {
+    authenticateRequest(req, res, () => {
+        requestService.addMealToRestaurant(req.body['restaurantId'], req.body['mealId'], (success) => {
+            if (success) {
+                res.status(200).json({
+                    msg: `Meal added with id: ${req.body['mealId']} to restaurant with id: ${req.body['restaurantId']}`
+                });
+            } else {
                 res.status(400).json({msg: `Bad request`});
-        }
-    });
+            }
+        });
+    })
 });
 
-router.get('/deleteRestaurant/:id', (req, res) => {
-    requestService.deleteRestaurant(req.params.id, (success) => {
-        switch (success) {
-            case 1:
-                res.status(200).json({msg: `Restaurant deleted with id: ${req.params.id}`});
-                break;
-            case 0:
+router.delete('/removeMealFromRestaurant', (req, res) => {
+    authenticateRequest(req, res, () => {
+        requestService.removeMealFromRestaurant(req.body['restaurantId'], req.body['mealId'], (success) => {
+            if (success) {
+                res.status(200).json({
+                    msg: `Meal removed with id: ${req.body['mealId']}`
+                        + ` from restaurant with id: ${req.body['restaurantId']}`
+                });
+            } else {
                 res.status(400).json({msg: `Bad request`});
-        }
-    });
-});
-
-router.get('/addMealToRestaurant/:restaurantId/:mealId', (req, res) => {
-    requestService.addMealToRestaurant(req.params.restaurantId, req.params.mealId, (success) => {
-        if (success) {
-            res.status(200).json({
-                msg: `Meal added with id: ${req.params.mealId} to restaurant with id: ${req.params.restaurantId}`
-            });
-        } else {
-            res.status(400).json({msg: `Bad request`});
-        }
-    });
-});
-
-router.get('/removeMealFromRestaurant/:restaurantId/:mealId', (req, res) => {
-    requestService.removeMealFromRestaurant(req.params.restaurantId, req.params.mealId, (success) => {
-        if (success) {
-            res.status(200).json({
-                msg: `Meal removed with id: ${req.params.mealId}`
-                    + ` from restaurant with id: ${req.params.restaurantId}`
-            });
-        } else {
-            res.status(400).json({msg: `Bad request`});
-        }
-    });
+            }
+        });
+    })
 });
 
 router.get('/listMealsFromRestaurant/:restaurantId', (req, res) => {
