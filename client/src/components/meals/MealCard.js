@@ -67,7 +67,7 @@ export default function MealCard(props) {
 
     const fetchRestaurantsMealAvailableIn = async () => {
         const fetchRestaurantsMealAvailableIn = await fetch(
-            `http://localhost:8080/listRestaurantsContainingMeal/${meal._id}`
+            `listRestaurantsContainingMeal/${meal._id}`
         );
         const restaurantsAvailableIn = await fetchRestaurantsMealAvailableIn.json();
         const restaurants = await restaurantsAvailableIn;

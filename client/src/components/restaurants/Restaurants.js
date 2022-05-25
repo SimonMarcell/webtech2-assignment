@@ -41,7 +41,7 @@ class Restaurants extends Component {
     }
 
     loadRestaurants = () => {
-        axios.get(`http://localhost:8080/listRestaurants`).then(res => {
+        axios.get(`listRestaurants`).then(res => {
                 if (res.status === 200) {
                     this.setState({restaurants: res.data, responseArrived: true});
                 }
@@ -80,7 +80,7 @@ class Restaurants extends Component {
     };
 
     handleRemoveMealButtonClick = (mealId, index) => {
-        axios.delete(`http://localhost:8080/removeMealFromRestaurant`,
+        axios.delete(`removeMealFromRestaurant`,
             {
                 headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
                 data: {
@@ -124,7 +124,7 @@ class Restaurants extends Component {
     handleCloseDeleteRestaurantDialog = (result) => {
         if (result) {
             let restaurantToInteractWith = this.state.restaurants[this.state.restaurantIndexToInteractWith];
-            axios.delete(`http://localhost:8080/deleteRestaurant`,
+            axios.delete(`deleteRestaurant`,
                 {
                     headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
                     data: {"restaurantId": restaurantToInteractWith._id}
@@ -164,7 +164,7 @@ class Restaurants extends Component {
         });
 
         if (restaurant !== undefined) {
-            axios.post(`http://localhost:8080/addRestaurant`, restaurant,
+            axios.post(`addRestaurant`, restaurant,
                 {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
                 .then(res => {
                     if (res.status === 200) {

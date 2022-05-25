@@ -13,12 +13,20 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 const mealTypes = [
     {
+        value: 'Starter',
+        label: 'Starter',
+    },
+    {
         value: 'Main Dish',
         label: 'Main Dish',
     },
     {
         value: 'Side Dish',
         label: 'Side Dish',
+    },
+    {
+        value: 'Dessert',
+        label: 'Dessert',
     }
 ];
 

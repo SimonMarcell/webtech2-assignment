@@ -45,7 +45,7 @@ class Meals extends Component {
     }
 
     loadMeals = () => {
-        axios.get(`http://localhost:8080/listMeals`).then(res => {
+        axios.get(`listMeals`).then(res => {
                 if (res.status === 200) {
                     this.setState({meals: res.data, responseArrived: true});
                 }
@@ -57,7 +57,7 @@ class Meals extends Component {
     };
 
     loadRestaurants = () => {
-        axios.get(`http://localhost:8080/listRestaurants`).then(res => {
+        axios.get(`listRestaurants`).then(res => {
                 if (res.status === 200) {
                     this.setState({restaurants: res.data});
                 }
@@ -77,7 +77,7 @@ class Meals extends Component {
     handleCloseDeleteMealDialog = (result) => {
         if (result) {
             let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
-            axios.delete(`http://localhost:8080/deleteMeal`, {
+            axios.delete(`deleteMeal`, {
                 headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`},
                 data: {"mealId": mealToInteractWith._id}
             }).then(res => {
@@ -118,7 +118,7 @@ class Meals extends Component {
     };
 
     removeMealFromRestaurant = (restaurantId, mealId) => {
-        axios.get(`http://localhost:8080/removeMealFromRestaurant/${restaurantId}/${mealId}`,
+        axios.get(`removeMealFromRestaurant/${restaurantId}/${mealId}`,
             {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
             .then(res => {
                 if (res.status === 200) {
@@ -178,7 +178,7 @@ class Meals extends Component {
 
     addMealToRestaurant = (restaurantId, restaurantName) => {
         let mealToInteractWith = this.state.meals[this.state.mealIndexToInteractWith];
-        axios.post(`http://localhost:8080/addMealToRestaurant`,
+        axios.post(`addMealToRestaurant`,
             {
                 "mealId": mealToInteractWith._id,
                 "restaurantId": restaurantId
@@ -239,7 +239,7 @@ class Meals extends Component {
                 }
             };
 
-            axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend,
+            axios.put(`updateMeal/${meal._id}`, mealToSend,
                 {
                     headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}
                 }).then(res => {
@@ -281,7 +281,7 @@ class Meals extends Component {
         });
 
         if (meal !== undefined) {
-            axios.post(`http://localhost:8080/addMeal`, meal,
+            axios.post(`addMeal`, meal,
                 {headers: {Authorization: `Bearer ${Cookies.get('accessToken')}`}})
                 .then(res => {
                     if (res.status === 200) {

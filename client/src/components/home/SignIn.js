@@ -46,7 +46,7 @@ export default function SignIn(props) {
                 password: password,
                 grant_type: "password"
             }),
-            url: 'http://localhost:8080/oauth/token',
+            url: 'oauth/token',
             auth: {
                 username: 'application',
                 password: 'secret'
@@ -60,13 +60,13 @@ export default function SignIn(props) {
                 setCookies(res.data)
             }
         }).catch(err => {
-            onSubmit(err.response.data.msg, 'error')
+            onSubmit(err.response.data.message, 'error')
         })
     }
 
     function handleRegister(username, password) {
         axios.post(
-            `http://localhost:8080/createUser`,
+            `createUser`,
             {
                 "username": username,
                 "password": password
