@@ -1,8 +1,71 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+const model = require('../model')
+const OAuth2Server = require('oauth2-server'),
+    Request = OAuth2Server.Request,
+    Response = OAuth2Server.Response;
 
 let Service = require('../service/requestService');
 const requestService = new Service();
+
+const mongoUri = 'mongodb://localhost:27017/oauth';
+
+mongoose.connect(mongoUri, {
+    useNewUrlParser: true
+}, function (err, res) {
+
+    if (err) {
+        return console.error('Error connecting to "%s":', mongoUri, err);
+    }
+    console.log('Connected successfully to "%s"', mongoUri);
+});
+
+
+router.oauth = new OAuth2Server({
+    model: require('../model.js'),
+    accessTokenLifetime: 60 * 60,
+    allowBearerTokensInQueryString: true
+});
+
+router.all('/oauth/token', obtainToken);
+
+router.oauth = new OAuth2Server({
+    model: require('../model.js'),
+    accessTokenLifetime: 60 * 60,
+    allowBearerTokensInQueryString: true
+});
+
+function obtainToken(req, res) {
+
+    let request = new Request(req);
+    let response = new Response(res);
+
+    return router.oauth.token(request, response)
+        .then(function (token) {
+
+            res.json(token);
+        }).catch(function (err) {
+
+            res.status(err.code || 500).json(err);
+        });
+}
+
+function authenticateRequest(req, res, next) {
+
+    let request = new Request(req);
+    let response = new Response(res);
+
+    return router.oauth.authenticate(request, response)
+        .then(function (token) {
+
+            next();
+        }).catch(function (err) {
+
+            res.status(err.code || 500).json(err);
+        });
+}
+
 
 router.get('/listMeals', (req, res) => {
     if (req.query['_id'] !== undefined) {
@@ -108,28 +171,39 @@ router.post('/addMeal', (req, res) => {
 });
 
 router.put('/updateMeal/:id', (req, res) => {
-    if (!checkMealParams(req, res)) {
-        return;
-    }
 
-    let meal = {
-        "name": req.body['meal']['name'],
-        "type": req.body['meal']['type'],
-        "calories": req.body['meal']['calories']
-    }
+    let request = new Request(req);
+    let response = new Response(res);
 
-    requestService.updateMeal(req.params.id, meal, (result) => {
-        switch (result) {
-            case 0:
-                res.status(200).json({msg: `Meal updated with id: ${req.params.id}`});
-                break;
-            case 1:
-                res.status(202).json({msg: `Meal with id: ${req.params.id} already has the requested parameters`});
-                break;
-            case -1:
-                res.status(400).json({msg: `Bad request`});
-        }
-    });
+    return router.oauth.authenticate(request, response)
+        .then(function (token) {
+            if (!checkMealParams(req, res)) {
+                return;
+            }
+
+            let meal = {
+                "name": req.body['meal']['name'],
+                "type": req.body['meal']['type'],
+                "calories": req.body['meal']['calories']
+            }
+
+            requestService.updateMeal(req.params.id, meal, (result) => {
+                switch (result) {
+                    case 0:
+                        res.status(200).json({msg: `Meal updated with id: ${req.params.id}`});
+                        break;
+                    case 1:
+                        res.status(202).json({msg: `Meal with id: ${req.params.id} already has the requested parameters`});
+                        break;
+                    case -1:
+                        res.status(400).json({msg: `Bad request`});
+                }
+            });
+            // next();
+        }).catch(function (err) {
+
+            res.status(err.code || 500).json(err);
+        });
 });
 
 function checkMealParams(req, res) {

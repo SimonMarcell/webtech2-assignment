@@ -222,7 +222,6 @@ class Meals extends Component {
             axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend)
                 .then(res => {
                     if (res.status === 200) {
-                        //TODO: do not mutate directly, use setState instead
                         this.state.meals[this.state.mealIndexToInteractWith] = meal;
                         this.setState({
                             snackBarOpen: true,
@@ -275,8 +274,6 @@ class Meals extends Component {
                 });
         }
     };
-
-    // END: ADD PHONE
 
     render() {
         return (
