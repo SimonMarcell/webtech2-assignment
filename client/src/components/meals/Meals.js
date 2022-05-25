@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AddNewMealDialog from "./dialogs/AddNewMealDialog";
 import Tooltip from "@material-ui/core/Tooltip";
 import EmptyCollection from "../shared/EmptyCollection";
+import {string} from "prop-types";
 
 const fabStyle = {
     margin: 0,
@@ -219,7 +220,12 @@ class Meals extends Component {
                 }
             };
 
-            axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend)
+            axios.put(`http://localhost:8080/updateMeal/${meal._id}`, mealToSend,
+                {
+                    headers : {
+                        Authorization: "Bearer cf47ba6d487484598a7de0969e031a0859bc64f2"
+                    }
+                })
                 .then(res => {
                     if (res.status === 200) {
                         this.state.meals[this.state.mealIndexToInteractWith] = meal;
@@ -235,6 +241,13 @@ class Meals extends Component {
                             snackBarMessageSeverity: 'info'
                         });
                     }
+                })
+                .catch((err) => {
+                    this.setState({
+                        snackBarOpen: true,
+                        snackBarMessage: err.response.data.code + ' ' + err.response.data.message,
+                        snackBarMessageSeverity: 'error'
+                    });
                 });
         }
     };

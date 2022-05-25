@@ -13,6 +13,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import green from "@material-ui/core/colors/green";
+import SignIn from "./SignIn";
 
 const useStyles = makeStyles({
     gridTitle: {
@@ -47,121 +48,124 @@ export default function Home() {
     const classes = useStyles();
 
     return (
-        <div id="home-root">
+        <div id="home-root" style={{paddingTop: 50}}>
+            <SignIn/>
+            {/*<Grid container direction="column" alignItems="center" justify="center">*/}
+            {/*    <Grid item>*/}
+            {/*        <Typography gutterBottom variant="h3" className={classes.gridItem}>*/}
+            {/*            Functions:*/}
+            {/*        </Typography>*/}
+            {/*    </Grid>*/}
+            {/*</Grid>*/}
+            {/*<Grid container direction="row" alignItems="flex-start" justify="center">*/}
+            {/*    <Grid item style={{margin: 30}}>*/}
+            {/*        <Card className={classes.card}>*/}
+            {/*            <CardContent>*/}
+            {/*                <div className={classes.content}>*/}
+            {/*                    <FastfoodIcon className={classes.cardIcon}/>*/}
+            {/*                </div>*/}
+            {/*                <Typography gutterBottom variant="h5" component="h2">*/}
+            {/*                    Meals*/}
+            {/*                </Typography>*/}
+            {/*                <List>*/}
+            {/*                    <br/>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="List Meals from database"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="List Restaurants for each Meal that is available in"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="Add Meal to database"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="Modify Meal in database"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="Delete Meal from database"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="Add Meal to Restaurant"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                </List>*/}
+            {/*            </CardContent>*/}
+            {/*        </Card>*/}
+            {/*    </Grid>*/}
+            {/*    <Grid item style={{margin: 30}}>*/}
+            {/*        <Card className={classes.card}>*/}
+            {/*            <CardContent>*/}
+            {/*                <div className={classes.content}>*/}
+            {/*                    <RestaurantIcon className={classes.cardIcon}/>*/}
+            {/*                </div>*/}
+            {/*                <Typography gutterBottom variant="h5" component="h2">*/}
+            {/*                    Restaurants*/}
+            {/*                </Typography>*/}
+            {/*                <List>*/}
+            {/*                    <br/>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="List Restaurants from database"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="List available Meals in each Restaurant"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                    <ListItem>*/}
+            {/*                        <ListItemAvatar>*/}
+            {/*                            <Avatar className={classes.tick}>*/}
+            {/*                                <CheckIcon/>*/}
+            {/*                            </Avatar>*/}
+            {/*                        </ListItemAvatar>*/}
+            {/*                        <ListItemText primary="Remove Meal from Restaurant"/>*/}
+            {/*                    </ListItem>*/}
+            {/*                </List>*/}
+            {/*            </CardContent>*/}
+            {/*        </Card>*/}
+            {/*    </Grid>*/}
+            {/*</Grid>*/}
             <Grid container direction="column" alignItems="center" justify="center">
                 <Grid item>
-                    <Typography gutterBottom variant="h3" className={classes.gridTitle}>
+                    <Typography gutterBottom variant="h6" className={classes.gridTitle}>
                         Made by: Marcell Simon (K9IVJV)
                     </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography gutterBottom variant="h3" className={classes.gridItem}>
-                        Functions:
-                    </Typography>
-                </Grid>
-            </Grid>
-            <Grid container direction="row" alignItems="flex-start" justify="center">
-                <Grid item style={{margin: 30}}>
-                    <Card className={classes.card}>
-                        <CardContent>
-                            <div className={classes.content}>
-                                <FastfoodIcon className={classes.cardIcon}/>
-                            </div>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Meals
-                            </Typography>
-                            <List>
-                                <br/>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="List Meals from database"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="List Restaurants for each Meal that is available in"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="Add Meal to database"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="Modify Meal in database"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="Delete Meal from database"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="Add Meal to Restaurant"/>
-                                </ListItem>
-                            </List>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item style={{margin: 30}}>
-                    <Card className={classes.card}>
-                        <CardContent>
-                            <div className={classes.content}>
-                                <RestaurantIcon className={classes.cardIcon}/>
-                            </div>
-                            <Typography gutterBottom variant="h5" component="h2">
-                                Restaurants
-                            </Typography>
-                            <List>
-                                <br/>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="List Restaurants from database"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="List available Meals in each Restaurant"/>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar className={classes.tick}>
-                                            <CheckIcon/>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary="Remove Meal from Restaurant"/>
-                                </ListItem>
-                            </List>
-                        </CardContent>
-                    </Card>
                 </Grid>
             </Grid>
         </div>
